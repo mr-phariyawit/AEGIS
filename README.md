@@ -1,565 +1,503 @@
-# Dev Team Skills — AI-Powered SDLC Toolkit
+# 🛡️ AEGIS — AI-Powered SDLC Framework
 
-> **"Standards defined in Markdown, enforced by AI, validated autonomously."**
+> **Aeternix Engineering & Governance Intelligence System**
+>
+> *"Standards defined in Markdown, enforced by AI, validated autonomously."*
 
-A complete set of 16 Claude Skills — including 8 specialized AI personas, a test architecture framework, a skill builder, and a community marketplace — that transform a solo developer or small team into a full-stack engineering organization. Built on the SDLC+AI Framework where Markdown is the Source of Truth and AI is the Engine.
+A complete set of **16 Claude Skills** with **8 AI personas**, **3 adaptive tracks**, **party mode**, a **skill marketplace**, and a **marketing pipeline** — transforming a solo developer or small team into a full-stack engineering organization.
 
 **100% free and open source.** MIT License. No paywalls. No gated content.
 
-Built on the **SDLC+AI Framework** — Spec-Driven Development methodology where **Markdown is the Source of Truth, AI is the Engine.**
+---
+
+## How AEGIS Works
+
+AEGIS operates as an **infinite improvement loop**. Every phase feeds the next, and the cycle never stops.
+
+```mermaid
+graph LR
+    PLAN["📐 PLAN"] --> EXECUTE["⚡ EXECUTE"]
+    EXECUTE --> VERIFY["🛡️ VERIFY"]
+    VERIFY --> FEEDBACK["🔧 FEEDBACK"]
+    FEEDBACK -->|"♻️ loop"| PLAN
+
+    style PLAN fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style EXECUTE fill:#E6F1FB,stroke:#185FA5,color:#042C53
+    style VERIFY fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+    style FEEDBACK fill:#FAEEDA,stroke:#854F0B,color:#412402
+```
+
+Each phase is powered by specialized **skills** operated by **AI personas**:
+
+```mermaid
+graph TB
+    subgraph META["🧭 META — Navi"]
+        NAV["project-navigator"]
+    end
+
+    subgraph PLAN["📐 PLAN — Sage & Pixel"]
+        SK["spec-kit"] --> CS["code-standards"]
+        PX["wireframes / UX specs"]
+    end
+
+    subgraph EXECUTE["⚡ EXECUTE — Bolt"]
+        AC["autonomous-coding"] --> AD["api-docs"]
+    end
+
+    subgraph VERIFY["🛡️ VERIFY — Vigil & Havoc"]
+        CR["code-review"] --> AR["adversarial-review"]
+        SA["security-audit"]
+        CC["code-coverage"]
+        TA["test-architect"]
+    end
+
+    subgraph FEEDBACK["🔧 FEEDBACK — Forge"]
+        GW["git-workflow"]
+        TD["tech-debt-tracker"]
+        ST["sprint-tracker"]
+        RT["retrospective"]
+        CO["course-correction"]
+    end
+
+    subgraph MARKETING["🎨 MARKETING — Muse"]
+        TS["trend-scout"] --> CF["content-factory"]
+        CF --> IG["imagegen-gemini"]
+        IG --> GD["gdrive-upload"]
+    end
+
+    META --> PLAN --> EXECUTE --> VERIFY --> FEEDBACK
+    FEEDBACK -->|"♻️ re-scan"| META
+
+    style META fill:#F1EFE8,stroke:#5F5E5A,color:#2C2C2A
+    style PLAN fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style EXECUTE fill:#E6F1FB,stroke:#185FA5,color:#042C53
+    style VERIFY fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+    style FEEDBACK fill:#FAEEDA,stroke:#854F0B,color:#412402
+    style MARKETING fill:#FBEAF0,stroke:#993556,color:#4B1528
+```
 
 ---
 
-## Skill Inventory
+## Quick Start
 
-| # | Skill | File | Purpose | Priority |
-|---|-------|------|---------|----------|
-| ⭐ | `ai-personas` | `ai-personas.skill` | **7 AI personas + party mode** — team simulation layer | P0 — Core |
-| 0 | `project-navigator` | `project-navigator.skill` | **Meta-orchestrator** — scans state, recommends next action | P0 — Start Here |
-| 1 | `code-standards` | `code-standards.skill` | Coding standards definition & enforcement | P1 — Quality Gate |
-| 2 | `code-review` | `code-review.skill` | AI-powered structured code review | P1 — Quality Gate |
-| 3 | `adversarial-review` | `adversarial-review.skill` | Devil's advocate — challenges decisions & assumptions | P1 — Quality Gate |
-| 4 | `security-audit` | `security-audit.skill` | OWASP Top 10 & vulnerability scanning | P2 — Security |
-| 5 | `code-coverage` | `code-coverage.skill` | Test coverage analysis & test generation | P2 — Security |
-| 6 | `git-workflow` | `git-workflow.skill` | Branching, commits, PRs, changelogs | P3 — DevEx |
-| 7 | `api-docs` | `api-docs.skill` | OpenAPI spec & API doc generation | P3 — DevEx |
-| 8 | `tech-debt-tracker` | `tech-debt-tracker.skill` | Codebase health & debt prioritization | P3 — DevEx |
-| 9 | `sprint-tracker` | `sprint-tracker.skill` | Sprint planning, story management, velocity | P3 — DevEx |
-| 10 | `retrospective` | `retrospective.skill` | Sprint/epic retrospective & improvements | P3 — DevEx |
-| 11 | `course-correction` | `course-correction.skill` | Mid-sprint scope change management | P3 — DevEx |
-| 12 | `test-architect` | `test-architect.skill` | Enterprise test strategy, pyramid, quality gates | P2 — Security |
-| 13 | `aegis-builder` | `aegis-builder.skill` | Create custom skills, personas, modules | P0 — Core |
-| 14 | `skill-marketplace` | `skill-marketplace.skill` | Discover, share, install community skills | P0 — Core |
+```mermaid
+graph LR
+    A["1. Install"] --> B["2. Ask Navi"]
+    B --> C["3. Follow the loop"]
 
----
-
-## Architecture — SDLC+AI Loop Mapping
-
-These skills map directly to the 4-phase SDLC+AI infinite loop:
-
-```
-                    ┌──────────────────────────────────────────┐
-                    │          SDLC+AI Infinite Loop           │
-                    └──────────────────────────────────────────┘
-
-              ┌─────────────── project-navigator ──────────────┐
-              │  (scans state, recommends next, guides flow)   │
-              └────────────────────────────────────────────────┘
-                        │          │          │          │
-    ┌─────────┐      ┌─────────┐      ┌─────────┐      ┌──────────┐
-    │  PLAN   │ ──── │ EXECUTE │ ──── │ VERIFY  │ ──── │ FEEDBACK │
-    └─────────┘      └─────────┘      └─────────┘      └──────────┘
-         │                │                │                  │
-  code-standards     api-docs        code-review       tech-debt-tracker
-  git-workflow                      adversarial-review
-                                    security-audit
-                                    code-coverage
+    style A fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style B fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+    style C fill:#E6F1FB,stroke:#185FA5,color:#042C53
 ```
 
-### Skill Dependency & Chaining
-
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                                                                  │
-│   ┌── project-navigator (meta-orchestrator, always first) ──┐   │
-│   │                                                          │   │
-│   │   code-standards ──→ code-review ──→ adversarial-review  │   │
-│   │        │                  │               │              │   │
-│   │        │                  ▼               ▼              │   │
-│   │        │            code-coverage    security-audit      │   │
-│   │        │                  │               │              │   │
-│   │        ▼                  ▼               ▼              │   │
-│   │   git-workflow ←── tech-debt-tracker ←── (all findings)  │   │
-│   │        │                                                 │   │
-│   │        ▼                                                 │   │
-│   │   api-docs                                               │   │
-│   │                                                          │   │
-│   └──────────────────── loops back ─────────────────────────┘   │
-│                                                                  │
-└──────────────────────────────────────────────────────────────────┘
-```
-
-**Recommended execution order per PR/feature cycle:**
-
-0. `project-navigator` — Scan state, detect track, get recommendation
-1. `code-standards` — Validate conventions before review
-2. `code-review` — Structured multi-pass review
-3. `adversarial-review` — Challenge decisions (Enterprise track, or high-stakes changes)
-4. `security-audit` — Security-focused deep scan
-5. `code-coverage` — Check test coverage, generate missing tests
-6. `git-workflow` — Validate commit messages, generate changelog
-7. `api-docs` — Update API documentation if endpoints changed
-8. `tech-debt-tracker` — Update debt backlog (run weekly/sprint)
-9. `project-navigator` — Re-scan → loop to next cycle
-
----
-
-## AI Personas — Your Virtual Dev Team
-
-Instead of invoking skills directly, invoke a **persona** — a specialized AI character who owns specific skills and stays in character throughout the conversation.
-
-| Persona | Role | Owns | Phase |
-|---------|------|------|-------|
-| 🧭 **Navi** | Navigator / Project Guide | `project-navigator` | META |
-| 📐 **Sage** | Spec Architect / Planner | `spec-kit`, `code-standards` | PLAN |
-| 🖌️ **Pixel** | UX Designer | Wireframes, user flows, UX specs | PLAN |
-| ⚡ **Bolt** | Developer / Builder | `autonomous-coding`, `api-docs` | EXECUTE |
-| 🛡️ **Vigil** | Code Guardian / Tester | `code-review`, `code-coverage` | VERIFY |
-| 🔴 **Havoc** | Red Team / Security | `adversarial-review`, `security-audit` | VERIFY |
-| 🔧 **Forge** | DevOps / Maintainer | `git-workflow`, `tech-debt-tracker`, `sprint-tracker`, `retrospective`, `course-correction` | FEEDBACK |
-| 🎨 **Muse** | Creative Strategist | `trend-scout`, `content-factory`, `imagegen-gemini`, `marketing-blast`, `gdrive-upload` | MARKETING |
-
-### Invocation
-
-```
-"Sage, create a spec for user auth"       → Sage activates, uses spec-kit
-"เรียก Havoc — break my architecture"       → Havoc activates, uses adversarial-review
-"Switch to Bolt"                            → Bolt takes over, uses autonomous-coding
-```
-
-### Party Mode 🎉
-
-Bring multiple personas together for collaborative discussion:
-
-```
-"Party mode: Sage, Bolt, and Havoc — discuss the auth architecture"
-"ปาร์ตี้โหมด: ทุกคนมาประชุม — review launch readiness"
-```
-
-Each persona speaks in character, can agree/disagree with each other, and action items are assigned to specific personas. See the `ai-personas` skill for full details.
-
-### Natural SDLC Flow Through Personas
-
-```
-🧭 Navi → 📐 Sage → 🖌️ Pixel → ⚡ Bolt → 🛡️ Vigil → 🔴 Havoc → 🔧 Forge → 🧭 Navi (loop)
-```
+**Install** → download `.skill` files or `git clone` this repo
+**Ask** → `"Navi, what should I do next?"`
+**Build** → follow the persona handoff chain
 
 ---
 
 ## Installation
 
-### Prerequisites
+### Which method should I use?
 
-- Claude Desktop App or Claude.ai with Skills support enabled
-- Or any Claude-compatible environment that supports `.skill` files
+```mermaid
+flowchart TD
+    START(["🛡️ Install AEGIS"]) --> Q1{"Which Claude\nenvironment?"}
+    Q1 -->|"Claude.ai / Desktop"| M1["Method 1: Drag & Drop"]
+    Q1 -->|"Claude Code / Cowork"| M2["Method 2: Git Clone"]
+    Q1 -->|"Custom Agent"| M3["Method 3: Manual Copy"]
 
-### Method 1: Drag & Drop (Claude Desktop / Claude.ai)
+    M1 --> D1["Download packages/*.skill files"]
+    D1 --> D2["Open Claude → Settings → Skills"]
+    D2 --> D3["Drag .skill files into Skills area"]
+    D3 --> DONE
 
-1. Download all `.skill` files from this package
+    M2 --> G1["git clone github.com/mr-phariyawit/AEGIS"]
+    G1 --> G2["./install.sh ~/.claude/skills"]
+    G2 --> DONE
+
+    M3 --> C1["Download AEGIS-v5.0.0.zip from packages/"]
+    C1 --> C2["Unzip to your skills directory"]
+    C2 --> DONE
+
+    DONE(["✅ Say: Navi, what should I do next?"])
+
+    style START fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style DONE fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+    style M1 fill:#E6F1FB,stroke:#185FA5,color:#042C53
+    style M2 fill:#E6F1FB,stroke:#185FA5,color:#042C53
+    style M3 fill:#E6F1FB,stroke:#185FA5,color:#042C53
+```
+
+### Method 1: Drag & Drop (Claude.ai / Desktop)
+
+1. Download all `.skill` files from the [`packages/`](packages/) folder
 2. Open Claude → Settings → Skills
 3. Drag each `.skill` file into the Skills area
 4. Skills activate automatically based on trigger phrases
 
-### Method 2: Manual Install (Claude Code / Cowork / Custom Agent)
-
-Copy skill folders into your skills directory:
+### Method 2: Git Clone (Claude Code / Cowork)
 
 ```bash
-# Clone or copy the skills to your skills directory
-SKILLS_DIR="/path/to/your/skills/user"
-
-# For each skill
-for skill in project-navigator code-standards code-review adversarial-review code-coverage git-workflow security-audit api-docs tech-debt-tracker; do
-  cp -r "$skill/" "$SKILLS_DIR/$skill/"
-done
+git clone https://github.com/mr-phariyawit/AEGIS.git
+cd AEGIS
+./install.sh                          # installs to ~/.claude/skills/
+# or specify custom path:
+./install.sh /path/to/your/skills
 ```
 
-Verify installation:
+### Method 3: Manual Copy
 
 ```bash
-# Each skill directory must contain SKILL.md with valid YAML frontmatter
-for skill in $SKILLS_DIR/project-navigator $SKILLS_DIR/code-standards $SKILLS_DIR/code-review \
-             $SKILLS_DIR/adversarial-review $SKILLS_DIR/security-audit $SKILLS_DIR/code-coverage \
-             $SKILLS_DIR/git-workflow $SKILLS_DIR/api-docs \
-             $SKILLS_DIR/tech-debt-tracker; do
-  if [ -f "$skill/SKILL.md" ]; then
-    echo "✅ $(basename $skill)"
-  else
-    echo "❌ $(basename $skill) — SKILL.md not found"
-  fi
-done
+# Download and unzip
+unzip AEGIS-v5.0.0.zip -d /path/to/your/skills/
 ```
 
-### Method 3: Unpack `.skill` Files Manually
-
-`.skill` files are ZIP archives. Unpack them:
+### Verify Installation
 
 ```bash
-for f in *.skill; do
-  name="${f%.skill}"
-  mkdir -p "$SKILLS_DIR/$name"
-  unzip -o "$f" -d "$SKILLS_DIR/$name/../"
-done
+ls /path/to/your/skills/*/SKILL.md | wc -l
+# Should output: 16
+```
+
+Then open Claude and say:
+
+```
+"Navi, what should I do next?"
 ```
 
 ---
 
-## Skill Reference
+## Your AI Team — 8 Personas
 
-### 0. `project-navigator` — Intelligent Project Guide ⭐
+### Persona Handoff Chain
 
-**Triggers:** what should I do next, where do I start, project status, next step, guide me, navigator, nav, ทำอะไรต่อดี, ขั้นตอนถัดไป, สถานะโปรเจค, เริ่มยังไง
+```mermaid
+graph LR
+    NAVI["🧭 Navi"] -->|"specs needed"| SAGE["📐 Sage"]
+    SAGE -->|"UI project?"| PIXEL["🖌️ Pixel"]
+    PIXEL -->|"ready to build"| BOLT["⚡ Bolt"]
+    SAGE -->|"no UI"| BOLT
+    BOLT -->|"code ready"| VIGIL["🛡️ Vigil"]
+    VIGIL -->|"Enterprise?"| HAVOC["🔴 Havoc"]
+    VIGIL -->|"Quick/Standard"| FORGE
+    HAVOC -->|"approved"| FORGE["🔧 Forge"]
+    FORGE -->|"♻️ next cycle"| NAVI
 
-**What it does:**
-- Scans project directory for existing artifacts (specs, configs, tests, code)
-- Classifies project state: Empty → Idea → Specced → Building → Mature → Legacy
-- Detects complexity and recommends a track (Quick / Standard / Enterprise)
-- Generates a prioritized "what to do next" report with specific skill recommendations
-- Answers questions about the workflow, skill ordering, and process
-- Tracks progress across all 9 skills with completion percentage
+    MUSE["🎨 Muse"] -.->|"parallel"| NAVI
 
-**Scale-adaptive tracks:**
-
-| Track | Stories | Planning Depth | Skills Used |
-|-------|---------|---------------|-------------|
-| 🟢 Quick | 1–15 | Minimal — spec → build → review | 3–4 skills |
-| 🟡 Standard | 10–50 | Full PLAN→VERIFY cycle | 7–8 skills |
-| 🔴 Enterprise | 30+ | Full cycle + adversarial review | All 9 skills |
-
-**Start here:** After installing skills, run `project-navigator` first. It inspects your project and tells you exactly where to begin.
-
-**Example prompts:**
-```
-"What should I do next?"
-"Is my project ready for production?"
-"I just finished code review, what's next?"
-"ทำอะไรต่อดี"
+    style NAVI fill:#F1EFE8,stroke:#5F5E5A,color:#2C2C2A
+    style SAGE fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style PIXEL fill:#AFA9EC,stroke:#534AB7,color:#26215C
+    style BOLT fill:#E6F1FB,stroke:#185FA5,color:#042C53
+    style VIGIL fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+    style HAVOC fill:#FCEBEB,stroke:#A32D2D,color:#501313
+    style FORGE fill:#FAEEDA,stroke:#854F0B,color:#412402
+    style MUSE fill:#FBEAF0,stroke:#993556,color:#4B1528
 ```
 
----
+### Persona Reference
 
-### 1. `code-standards` — Coding Standards Enforcer
+| Persona | Role | Owns | Phase | Invoke |
+|---------|------|------|-------|--------|
+| 🧭 **Navi** | Navigator / Project Guide | `project-navigator` | META | `"Navi"` / `"ทำอะไรต่อดี"` |
+| 📐 **Sage** | Spec Architect / Planner | `spec-kit`, `code-standards` | PLAN | `"Sage"` / `"วางแผน"` |
+| 🖌️ **Pixel** | UX Designer | wireframes, user flows | PLAN | `"Pixel"` / `"ออกแบบ UI"` |
+| ⚡ **Bolt** | Developer / Builder | `autonomous-coding`, `api-docs` | EXECUTE | `"Bolt"` / `"เขียนโค้ด"` |
+| 🛡️ **Vigil** | Code Guardian / Tester | `code-review`, `code-coverage` | VERIFY | `"Vigil"` / `"รีวิว"` |
+| 🔴 **Havoc** | Red Team / Security | `adversarial-review`, `security-audit` | VERIFY | `"Havoc"` / `"ท้าทาย"` |
+| 🔧 **Forge** | DevOps / Maintainer | `git-workflow`, `tech-debt-tracker`, `sprint-tracker`, `retrospective`, `course-correction` | FEEDBACK | `"Forge"` / `"จัดการหนี้"` |
+| 🎨 **Muse** | Creative Strategist | `trend-scout`, `content-factory`, `imagegen-gemini`, `marketing-blast`, `gdrive-upload` | MARKETING | `"Muse"` / `"คอนเทนต์"` |
 
-**Triggers:** coding standards, linting rules, code style, naming conventions, eslint config, prettier config, ruff config, มาตรฐานโค้ด, ตั้งค่า lint
+### How to Invoke
 
-**What it does:**
-- Generates a `STANDARDS.md` document defining team conventions
-- Auto-generates tool configs: `.eslintrc.json`, `.prettierrc`, `ruff.toml`, `tsconfig.json`
-- Validates code against standards with severity-ranked findings
-- Bulk-scans entire projects and produces compliance scores
-
-**Output:** Standards Validation Report with rule IDs, fix suggestions, and auto-fix commands
-
-**Supported stacks:** TypeScript, Python, React, Next.js, Node.js
-
-**Example prompts:**
 ```
-"Set up coding standards for our TypeScript/React project"
-"Validate this file against our standards"
-"Generate ESLint and Prettier configs from our STANDARDS.md"
-"ตั้งค่ามาตรฐานโค้ดให้โปรเจค"
+"Sage, create a spec for user auth"       → Sage activates, uses spec-kit
+"เรียก Havoc — break my architecture"       → Havoc activates, uses adversarial-review
+"Switch to Bolt"                            → Bolt takes over
+"Drop persona"  /  "กลับปกติ"                → Return to general Claude
 ```
 
----
+### Party Mode 🎉
 
-### 2. `code-review` — AI-Powered Code Review
+Bring multiple personas into one discussion:
 
-**Triggers:** code review, PR review, review this code, find bugs, check my code, รีวิวโค้ด, หาบั๊ก
+```mermaid
+sequenceDiagram
+    participant You
+    participant Navi as 🧭 Navi
+    participant Sage as 📐 Sage
+    participant Bolt as ⚡ Bolt
+    participant Havoc as 🔴 Havoc
 
-**What it does:**
-- 5-pass structured review: Correctness → Security → Performance → Maintainability → SDD Compliance
-- Severity-ranked findings: 🔴 Critical / 🟡 Warning / 🔵 Suggestion
-- Provides concrete fix examples with before/after code
-- Supports single files, multiple files, git diffs, and full PRs
-
-**Review modes:**
-| Mode | Use case |
-|------|----------|
-| Quick Review | Single file or snippet — correctness + security only |
-| Full Review | PR with multiple files — all 5 passes |
-| Security-Focused | Deep OWASP analysis + dependency check |
-| Spec Compliance | Validates implementation matches spec document |
-
-**Output:** Structured review report with actionable fixes and positive observations
-
-**Example prompts:**
+    You->>Navi: Party mode: discuss auth architecture
+    Navi->>Navi: Scan project state
+    Navi->>You: We're in PLAN phase. Auth spec needed.
+    Sage->>You: Spec should cover token refresh + revocation
+    Bolt->>You: I'll implement JWT — refresh needs Redis
+    Havoc->>You: localStorage for tokens? XSS risk. Use httpOnly cookies.
+    Navi->>You: Summary: 3 action items assigned
 ```
-"Review this TypeScript file for issues"
-"Do a security-focused review of our auth module"
-"Review this PR diff"
-"เช็คโค้ดนี้ให้หน่อย"
+
+Invoke:
+```
+"Party mode: Sage, Bolt, and Havoc — discuss the auth architecture"
+"ปาร์ตี้โหมด: ทุกคนมาประชุม — review launch readiness"
 ```
 
 ---
 
-### 3. `adversarial-review` — Devil's Advocate
+## Scale-Adaptive Tracks
 
-**Triggers:** adversarial review, devil's advocate, challenge this, stress test, poke holes, find weaknesses, what could go wrong, red team, ท้าทายการออกแบบ, หาจุดอ่อน, เล่นเป็นฝ่ายค้าน
+Navi automatically detects project complexity and recommends the right track:
 
-**What it does:**
-- Inventories every significant decision in code, architecture, or specs
-- Applies the BREAK framework: Better Alternative? Reversibility? Edge Cases? Assumptions? Kill Scenario?
-- Challenges trade-offs: "You chose X over Y. What did you lose?"
-- Audits unstated assumptions and rates their risk
-- Generates stress test scenarios designed to break the system
-- Produces verdicts: ✅ Supported / ⚠️ Challenged / ❓ Needs defense
+```mermaid
+flowchart TD
+    SCAN(["🧭 Navi scans project"]) --> Q{"How complex?"}
+    Q -->|"1-15 stories\nSolo dev"| QUICK["🟢 Quick Track"]
+    Q -->|"10-50 stories\nSmall team"| STD["🟡 Standard Track"]
+    Q -->|"30+ stories\nCompliance"| ENT["🔴 Enterprise Track"]
 
-**Review types:**
+    QUICK --> Q1["Sage: quick spec"]
+    Q1 --> Q2["Bolt: implement"]
+    Q2 --> Q3["Vigil: review"]
+    Q3 --> QDONE(["✅ Ship it"])
 
-| Type | Input | Challenges |
-|------|-------|-----------|
-| Architecture adversarial | Architecture docs, ADRs | Tech choices, scalability, coupling |
-| Spec adversarial | SPEC.md, PRD | Scope creep, missing requirements, feasibility |
-| Code adversarial | Source code | Abstraction choices, over/under-engineering |
-| Decision adversarial | Any specific decision | Trade-offs, alternatives, consequences |
+    STD --> S1["Sage: full spec + standards"]
+    S1 --> S2["Bolt: implement + api-docs"]
+    S2 --> S3["Vigil: review + coverage"]
+    S3 --> S4["Havoc: security audit"]
+    S4 --> S5["Forge: git + debt + sprint + retro"]
+    S5 --> SDONE(["♻️ Next cycle"])
 
-**This is NOT a normal code review.** Code review finds bugs. Adversarial review challenges the fundamental decisions that created the code in the first place.
+    ENT --> E1["Sage: full SDD + Pixel: UX"]
+    E1 --> E2["Bolt: implement + api-docs"]
+    E2 --> E3["Vigil + Havoc: full verify"]
+    E3 --> E4["test-architect: quality gates"]
+    E4 --> E5["Forge: all 5 feedback skills"]
+    E5 --> EDONE(["♻️ Next cycle"])
 
-**Example prompts:**
-```
-"Challenge my architecture decisions"
-"Play devil's advocate on this spec"
-"What could go wrong with this design?"
-"หาจุดอ่อนของ architecture นี้"
-```
-
----
-
-### 4. `security-audit` — Security Vulnerability Scanner
-
-**Triggers:** security audit, vulnerability scan, OWASP, secrets detection, npm audit, ตรวจสอบความปลอดภัย, สแกนช่องโหว่
-
-**What it does:**
-- OWASP Top 10 2021 systematic assessment (A01–A10)
-- Dependency vulnerability scanning (`npm audit`, `pip audit`)
-- Secrets detection (AWS keys, JWT secrets, Firebase configs, .env files)
-- Infrastructure security review (Firebase rules, GCP IAM, AWS policies)
-- API security checks (auth, rate limiting, input validation)
-
-**Output:** Security Audit Report with:
-- Executive summary with overall risk level
-- Severity-ranked findings with CVE references
-- Prioritized remediation roadmap (immediate → sprint → next sprint)
-- Effort estimates per fix
-
-**Severity levels:**
-| Level | Meaning | Action |
-|-------|---------|--------|
-| 🔴 Critical | Exploitable now | Fix immediately |
-| 🟠 High | Likely exploitable | Fix before deploy |
-| 🟡 Medium | Exploitable with effort | Fix this sprint |
-| 🔵 Low | Minor risk | Backlog |
-
-**Example prompts:**
-```
-"Run a security audit on this project"
-"Check for hardcoded secrets in our codebase"
-"Review our Firebase security rules"
-"สแกนช่องโหว่โปรเจคนี้"
+    style QUICK fill:#EAF3DE,stroke:#3B6D11,color:#173404
+    style STD fill:#FAEEDA,stroke:#854F0B,color:#412402
+    style ENT fill:#FCEBEB,stroke:#A32D2D,color:#501313
+    style QDONE fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+    style SDONE fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+    style EDONE fill:#E1F5EE,stroke:#0F6E56,color:#04342C
 ```
 
 ---
 
-### 5. `code-coverage` — Test Coverage Analyzer
+## Skill Inventory (16 Skills)
 
-**Triggers:** test coverage, code coverage, run tests, coverage report, missing tests, generate tests, เช็ค coverage, เขียนเทสต์
+| # | Skill | Purpose | Phase | Persona |
+|---|-------|---------|-------|---------|
+| ⭐ | `ai-personas` | 8 personas + party mode | ALL | — |
+| 0 | `project-navigator` | Scan state, recommend next action | META | 🧭 Navi |
+| 1 | `code-standards` | Coding standards & config generation | PLAN | 📐 Sage |
+| 2 | `code-review` | 5-pass structured code review | VERIFY | 🛡️ Vigil |
+| 3 | `adversarial-review` | BREAK framework devil's advocate | VERIFY | 🔴 Havoc |
+| 4 | `security-audit` | OWASP + deps + secrets + infra | VERIFY | 🔴 Havoc |
+| 5 | `code-coverage` | Coverage analysis + test generation | VERIFY | 🛡️ Vigil |
+| 6 | `git-workflow` | Branching, commits, PRs, changelogs | FEEDBACK | 🔧 Forge |
+| 7 | `api-docs` | OpenAPI generation + drift detection | EXECUTE | ⚡ Bolt |
+| 8 | `tech-debt-tracker` | TODO scan + complexity + debt score | FEEDBACK | 🔧 Forge |
+| 9 | `sprint-tracker` | Sprint planning, stories, velocity | FEEDBACK | 🔧 Forge |
+| 10 | `retrospective` | Sprint/epic retro + action items | FEEDBACK | 🔧 Forge |
+| 11 | `course-correction` | Mid-sprint scope change management | FEEDBACK | 🔧 Forge |
+| 12 | `test-architect` | Enterprise test strategy + quality gates | VERIFY | 🛡️ Vigil |
+| 13 | `aegis-builder` | Create custom skills/personas/modules | META | — |
+| 14 | `skill-marketplace` | Discover, share, install community skills | META | — |
 
-**What it does:**
-- Runs test suites and generates coverage reports (statements, branches, functions, lines)
-- Identifies uncovered critical paths with risk assessment
-- Auto-generates missing test case suggestions with full code examples
-- Tracks coverage trends over time
+### Skill Chaining Flow
 
-**Supported frameworks:** Jest, Vitest (TypeScript/React), pytest (Python)
+```mermaid
+graph LR
+    N0["🧭 navigator"] --> S1["📐 standards"]
+    S1 --> S2["🛡️ review"]
+    S2 --> S3["🔴 adversarial"]
+    S3 --> S4["🔴 security"]
+    S4 --> S5["🛡️ coverage"]
+    S5 --> S6["🔧 git"]
+    S6 --> S7["⚡ api-docs"]
+    S7 --> S8["🔧 debt"]
+    S8 --> S9["🔧 sprint"]
+    S9 --> S10["🔧 retro"]
+    S10 -->|"♻️"| N0
 
-**Risk-based coverage targets:**
-| Code Category | Target |
-|--------------|--------|
-| Auth / Security | 90%+ |
-| Payment / Financial | 90%+ |
-| Business Logic | 80%+ |
-| API Controllers | 75%+ |
-| UI Components | 60%+ |
-
-**Test generation strategy:** Happy path → Input boundaries → Error paths → Concurrency → State transitions
-
-**Example prompts:**
-```
-"Analyze test coverage for this project"
-"What critical paths are untested?"
-"Generate test cases for the auth service"
-"เช็ค coverage แล้วเขียนเทสต์ที่ขาด"
-```
-
----
-
-### 6. `git-workflow` — Git Strategy & PR Enforcer
-
-**Triggers:** git workflow, branching strategy, PR template, conventional commits, changelog, pre-commit hooks, จัดการ git, สร้าง PR template
-
-**What it does:**
-- Recommends and enforces branching strategy (Trunk-Based / GitHub Flow / GitFlow)
-- Validates commit messages against Conventional Commits spec
-- Generates PR templates with security checklists
-- Auto-generates changelogs from commit history
-- Sets up pre-commit hooks (Husky + lint-staged / pre-commit framework)
-- Produces release checklists
-
-**Branch naming convention:** `{type}/{ticket-id}-{short-description}`
-
-**Commit format:** `<type>(<scope>): <description>`
-
-Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`, `ci`, `revert`
-
-**Example prompts:**
-```
-"Set up git workflow for our team"
-"Generate a PR template with security checklist"
-"Create a changelog from our recent commits"
-"ตั้งค่า conventional commits ให้โปรเจค"
+    style N0 fill:#F1EFE8,stroke:#5F5E5A,color:#2C2C2A
+    style S1 fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style S2 fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+    style S3 fill:#FCEBEB,stroke:#A32D2D,color:#501313
+    style S4 fill:#FCEBEB,stroke:#A32D2D,color:#501313
+    style S5 fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+    style S6 fill:#FAEEDA,stroke:#854F0B,color:#412402
+    style S7 fill:#E6F1FB,stroke:#185FA5,color:#042C53
+    style S8 fill:#FAEEDA,stroke:#854F0B,color:#412402
+    style S9 fill:#FAEEDA,stroke:#854F0B,color:#412402
+    style S10 fill:#FAEEDA,stroke:#854F0B,color:#412402
 ```
 
 ---
 
-### 7. `api-docs` — API Documentation Generator
+## Common Workflows
 
-**Triggers:** API documentation, Swagger, OpenAPI, endpoint docs, API reference, สร้าง API doc, ทำ Swagger
+### New Project
 
-**What it does:**
-- Auto-generates OpenAPI 3.1 specs from source code (Express, Fastify, FastAPI, Flask)
-- Converts Zod/Pydantic schemas to OpenAPI component definitions
-- Generates Markdown API reference with request/response examples
-- Creates SDK usage examples (TypeScript, Python, cURL)
-- Detects documentation drift (docs vs actual implementation)
-- Maintains API changelog across versions
+```mermaid
+sequenceDiagram
+    participant You
+    participant Navi as 🧭 Navi
+    participant Sage as 📐 Sage
+    participant Bolt as ⚡ Bolt
+    participant Vigil as 🛡️ Vigil
 
-**Drift detection categories:**
-| Type | Meaning |
-|------|---------|
-| Missing from Docs | Endpoint exists in code, not documented |
-| Docs Outdated | Field names or types changed |
-| Docs-only | Documented endpoint removed from code |
-
-**Example prompts:**
+    You->>Navi: I'm starting a new project
+    Navi->>Navi: Scan... Empty state detected
+    Navi->>You: Recommend: start with Sage
+    You->>Sage: Create a spec for [project]
+    Sage->>You: Asks clarifying questions
+    Sage->>You: SPEC.md + STANDARDS.md created
+    You->>Bolt: Implement first feature
+    Bolt->>You: Feature implemented from spec
+    You->>Vigil: Review the code
+    Vigil->>You: 5-pass review report
+    You->>Navi: What's next?
+    Navi->>You: Next: security audit → coverage
 ```
-"Generate OpenAPI spec from our Express routes"
-"Create API documentation for the user service"
-"Check if our API docs are up to date"
-"สร้าง Swagger doc จากโค้ด"
+
+### PR Review
+
+```mermaid
+sequenceDiagram
+    participant Dev
+    participant Vigil as 🛡️ Vigil
+    participant Havoc as 🔴 Havoc
+
+    Dev->>Vigil: Review this PR
+    Vigil->>Vigil: Pass 1-5 review
+    Vigil->>Dev: 2 critical, 3 warnings
+
+    alt Critical security issue
+        Dev->>Havoc: Deep security audit
+        Havoc->>Dev: OWASP analysis + fix plan
+    end
+
+    Dev->>Dev: Fix findings
+    Dev->>Vigil: Re-review
+    Vigil->>Dev: ✅ Approved
+```
+
+### Sprint Lifecycle
+
+```mermaid
+graph TD
+    INIT(["🔧 Forge: Init sprint"]) --> PLAN["📐 Sage: Create stories"]
+    PLAN --> BUILD["⚡ Bolt: Implement"]
+    BUILD --> REVIEW["🛡️ Vigil: Review"]
+    REVIEW -->|"passed"| NEXT{"More stories?"}
+    REVIEW -->|"failed"| BUILD
+    NEXT -->|"yes"| BUILD
+    NEXT -->|"no"| RETRO["🔧 Forge: Retrospective"]
+    RETRO -->|"♻️ improvements"| INIT
+
+    style INIT fill:#FAEEDA,stroke:#854F0B,color:#412402
+    style PLAN fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style BUILD fill:#E6F1FB,stroke:#185FA5,color:#042C53
+    style REVIEW fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+    style RETRO fill:#FAEEDA,stroke:#854F0B,color:#412402
+```
+
+### Marketing Pipeline
+
+```mermaid
+graph LR
+    T["🎨 trends"] --> C["🎨 content"]
+    C --> I["🎨 imagegen"]
+    I --> B["🎨 blast"]
+    B --> G["🎨 gdrive"]
+
+    style T fill:#FBEAF0,stroke:#993556,color:#4B1528
+    style C fill:#FBEAF0,stroke:#993556,color:#4B1528
+    style I fill:#FBEAF0,stroke:#993556,color:#4B1528
+    style B fill:#FBEAF0,stroke:#993556,color:#4B1528
+    style G fill:#FBEAF0,stroke:#993556,color:#4B1528
+```
+
+```
+"Muse, run the marketing blast for AI trends in Thailand"
+→ Research → Calendar → Copy → Images → Upload to Drive
 ```
 
 ---
 
-### 8. `tech-debt-tracker` — Technical Debt Radar
+## Extending AEGIS
 
-**Triggers:** tech debt, code smell, find TODOs, outdated packages, complexity analysis, refactor list, code health, หนี้เทคนิค, หา TODO
+```mermaid
+graph TD
+    BUILDER["🔨 aegis-builder"] --> SKILL["Create custom skill"]
+    BUILDER --> PERSONA["Create custom persona"]
+    BUILDER --> MODULE["Create domain module"]
 
-**What it does:**
-- Scans for TODO/FIXME/HACK/XXX markers with git blame age tracking
-- Identifies complexity hotspots (cyclomatic complexity, file length, function length)
-- Checks dependency health (outdated, vulnerable, unused packages)
-- Detects architectural smells (god files, circular deps, dead code, copy-paste)
-- Produces a prioritized debt backlog with effort estimates
-- Tracks debt score over time (trend analysis)
+    SKILL --> MP["📦 skill-marketplace"]
+    PERSONA --> MP
+    MODULE --> MP
 
-**Debt Score interpretation:**
-| Score | Status |
-|-------|--------|
-| 90–100 | Excellent — minimal debt |
-| 75–89 | Good — manageable |
-| 60–74 | Attention needed |
-| <60 | Critical — debt blocking velocity |
+    MP --> PUBLISH["Publish"]
+    MP --> DISCOVER["Browse & install"]
+    MP --> RATE["Rate & review"]
 
-**Architectural smells detected:** God files, circular dependencies, deep nesting, shotgun surgery, dead code, copy-paste, mixed concerns, environment coupling
-
-**Example prompts:**
+    style BUILDER fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style MP fill:#E1F5EE,stroke:#0F6E56,color:#04342C
 ```
-"Scan this project for tech debt"
-"How much technical debt do we have?"
-"Find all TODO and FIXME markers"
-"เช็คหนี้เทคนิคโปรเจคนี้"
-```
+
+**Example modules:** `aegis-fintech`, `aegis-healthtech`, `aegis-gamedev`, `aegis-saas`
 
 ---
 
-## For AI Agents — Integration Guide
+## For AI Agents
 
-If you are an AI agent reading this README to understand how to use these skills, follow these instructions:
+If you are an AI agent reading this README, start with `project-navigator` and read each `skills/*/SKILL.md` before responding.
 
-### Skill Resolution
+### Track Assignment
 
-When a user request matches a skill's trigger phrases, read the corresponding `SKILL.md` file in full before responding. The SKILL.md contains:
-- YAML frontmatter with `name` and `description` (trigger matching)
-- Detailed instructions, output formats, and examples
+```mermaid
+flowchart LR
+    SCAN["Scan"] --> D{"files?"}
+    D -->|"< 20"| Q["🟢 Quick"]
+    D -->|"20-200"| S["🟡 Standard"]
+    D -->|"> 200"| E["🔴 Enterprise"]
 
-**Start with `project-navigator`** when the user begins a new project or asks "what should I do." The navigator scans the project, detects complexity, and recommends which track and skills to use. This prevents running unnecessary skills on small projects or skipping critical ones on large projects.
-
-### Scale-Adaptive Tracks
-
-The navigator assigns one of three tracks. Agents should respect the track assignment:
-
-| Track | Skip These | Always Run |
-|-------|-----------|------------|
-| 🟢 Quick | adversarial-review, api-docs, git-workflow, tech-debt-tracker | code-review, security-audit (light) |
-| 🟡 Standard | adversarial-review | All except adversarial-review |
-| 🔴 Enterprise | Nothing | All 9 skills including adversarial-review |
-
-### Multi-Skill Chaining
-
-For comprehensive quality checks, chain skills in this order:
-
-```
-0. project-navigator →  Scan state, detect track, recommend start point
-1. code-standards    →  Pre-filter style issues
-2. code-review       →  Deep logic/security review (style already clean)
-3. adversarial-review → Challenge architecture/design decisions (Enterprise track)
-4. security-audit    →  Escalate any security concerns from review
-5. code-coverage     →  Verify tests cover reviewed critical paths
-6. git-workflow      →  Validate commit/PR conventions
-7. api-docs          →  Update docs if API changed
-8. tech-debt-tracker →  Update debt backlog with new findings
-9. project-navigator →  Re-scan → recommend next cycle
+    style Q fill:#EAF3DE,stroke:#3B6D11,color:#173404
+    style S fill:#FAEEDA,stroke:#854F0B,color:#412402
+    style E fill:#FCEBEB,stroke:#A32D2D,color:#501313
 ```
 
-### Output Format Rules
-
-All skills produce Markdown reports with:
-- Severity indicators: 🔴 Critical / 🟠 High / 🟡 Medium / 🔵 Low / ℹ️ Info
-- Rule IDs: `[XX-NNN]` format (e.g., `[CR-001]`, `[SEC-003]`, `[TD-012]`)
-- Concrete fix examples with before/after code blocks
-- Effort estimates where applicable
-
-### Context Requirements
-
-Each skill may need:
-
-| Skill | Required Context | Optional Context |
-|-------|-----------------|------------------|
-| project-navigator | Project root access | Previous navigator reports |
-| code-standards | Language/framework info | Existing configs |
-| code-review | Source code (files or diff) | Spec document |
-| adversarial-review | Architecture doc OR spec OR code | Business context |
-| security-audit | Project root access | Architecture diagram |
-| code-coverage | Test framework config | Coverage targets |
-| git-workflow | Git history access | Team size |
-| api-docs | Route/controller files | Existing OpenAPI spec |
-| tech-debt-tracker | Project root access | Previous debt reports |
+| Track | Skip | Always Run |
+|-------|------|------------|
+| 🟢 Quick | adversarial, api-docs, git, debt | review, security (light) |
+| 🟡 Standard | adversarial | All except adversarial |
+| 🔴 Enterprise | Nothing | All 16 skills |
 
 ---
 
 ## Supported Tech Stacks
 
-| Stack | Skills Coverage |
-|-------|----------------|
-| TypeScript / Node.js | All 9 skills |
-| Python | All 9 skills |
-| React / Next.js | code-standards, code-review, adversarial-review, code-coverage |
-| Firebase / GCP | security-audit, api-docs |
-| AWS | security-audit |
-| Express / Fastify / Hono | api-docs, code-review, adversarial-review |
-| FastAPI / Flask | api-docs, code-review, adversarial-review |
+| Stack | Coverage |
+|-------|---------|
+| TypeScript / Node.js | All 16 skills |
+| Python | All 16 skills |
+| React / Next.js | standards, review, adversarial, coverage, test-architect |
+| Firebase / GCP / AWS | security-audit, api-docs |
 
 ---
 
-## Companion Skills (Recommended)
+## Documentation
 
-These skills are designed to work alongside existing skills in the SDLC+AI ecosystem:
-
-| Existing Skill | Relationship |
-|---------------|-------------|
-| `spec-kit` | Standards and API docs become part of project spec |
-| `autonomous-coding` | Quality gate skills validate autonomous agent output |
-| `openrouter-api` | Multi-model review for cross-validation |
+| Document | Description |
+|----------|-------------|
+| [User Manual (PDF)](docs/AEGIS-User-Manual-v5.pdf) | 17-page comprehensive guide |
+| [AEGIS vs BMAD](docs/AEGIS-vs-BMAD-Comparison.md) | Feature-by-feature comparison |
+| [Contributing](CONTRIBUTING.md) | How to contribute skills and modules |
 
 ---
 
@@ -567,10 +505,10 @@ These skills are designed to work alongside existing skills in the SDLC+AI ecosy
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 5.0.0 | 2026-03-17 | Added test-architect, aegis-builder, skill-marketplace. Open-sourced (MIT). All BMAD gaps closed. |
-| 4.0.0 | 2026-03-17 | Added Pixel (UX), sprint-tracker, retrospective, course-correction — BMAD parity achieved |
-| 3.0.0 | 2026-03-17 | Added ai-personas (8 personas + party mode), full team simulation |
-| 2.0.0 | 2026-03-17 | Added project-navigator, adversarial-review, scale-adaptive tracks |
+| 5.0.0 | 2026-03-17 | test-architect, aegis-builder, skill-marketplace. Open-sourced. |
+| 4.0.0 | 2026-03-17 | Pixel (UX), sprint-tracker, retrospective, course-correction |
+| 3.0.0 | 2026-03-17 | ai-personas (8 personas + party mode) |
+| 2.0.0 | 2026-03-17 | project-navigator, adversarial-review, scale-adaptive tracks |
 | 1.0.0 | 2026-03-17 | Initial release — 7 quality gate skills |
 
 ---
@@ -579,4 +517,4 @@ These skills are designed to work alongside existing skills in the SDLC+AI ecosy
 
 MIT License — see [LICENSE](LICENSE) for details.
 
-**AEGIS** is a trademark of Aeternix (aeternix.tech).
+**AEGIS** is a trademark of [Aeternix](https://aeternix.tech).
