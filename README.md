@@ -4,7 +4,7 @@
 >
 > *"Standards defined in Markdown, enforced by AI, validated autonomously."*
 
-A complete set of **16 Claude Skills** with **8 AI personas**, **3 adaptive tracks**, **party mode**, a **skill marketplace**, and a **marketing pipeline** — transforming a solo developer or small team into a full-stack engineering organization.
+A complete set of **17 Claude Skills** with **8 AI personas**, **3 adaptive tracks**, **party mode**, a **skill marketplace**, and a **marketing pipeline** — transforming a solo developer or small team into a full-stack engineering organization.
 
 **100% free and open source.** MIT License. No paywalls. No gated content.
 
@@ -37,6 +37,7 @@ graph TB
 
     subgraph PLAN["📐 PLAN — Sage & Pixel"]
         SK["spec-kit"] --> CS["code-standards"]
+        SS["super-spec (BRD+SRS+UX+PBI)"]
         PX["wireframes / UX specs"]
     end
 
@@ -201,7 +202,7 @@ graph LR
 | Persona | Role | Owns | Phase | Invoke |
 |---------|------|------|-------|--------|
 | 🧭 **Navi** | Navigator / Project Guide | `project-navigator` | META | `"Navi"` / `"ทำอะไรต่อดี"` |
-| 📐 **Sage** | Spec Architect / Planner | `spec-kit`, `code-standards` | PLAN | `"Sage"` / `"วางแผน"` |
+| 📐 **Sage** | Spec Architect / Planner | `spec-kit`, `code-standards`, `super-spec` | PLAN | `"Sage"` / `"วางแผน"` |
 | 🖌️ **Pixel** | UX Designer | wireframes, user flows | PLAN | `"Pixel"` / `"ออกแบบ UI"` |
 | ⚡ **Bolt** | Developer / Builder | `autonomous-coding`, `api-docs` | EXECUTE | `"Bolt"` / `"เขียนโค้ด"` |
 | 🛡️ **Vigil** | Code Guardian / Tester | `code-review`, `code-coverage` | VERIFY | `"Vigil"` / `"รีวิว"` |
@@ -247,6 +248,57 @@ Invoke:
 
 ---
 
+## Super Spec Engine — Sage's Power Skill
+
+Turn even a 2-word input into a complete, delivery-ready requirements package:
+
+```
+"Sage, super spec digital wallet"
+```
+
+```mermaid
+graph TD
+    INPUT(["📝 User Brief\ne.g. 'digital wallet'"]) --> PARSE["Phase 0: Parse & Infer\nproduct, domain, users, goals, region"]
+    PARSE --> RESEARCH["Phase 1: Research & Feature Landscape\nmust-have / nice-to-have / experimental"]
+    RESEARCH --> SYSTEM["Phase 2: Super System Analysis\nstakeholders, journeys, components, NFRs"]
+    SYSTEM --> BRD["Phase 3: BRD\nproblem, goals, KPIs, scope, risks"]
+    BRD --> SRS["Phase 4: SRS\nfunctional reqs, APIs, data model, validations"]
+    SRS --> UX["Phase 5: UX/UI Blueprint\nscreens, states, components — Figma-ready"]
+    UX --> PBI["Phase 6: PBIs\nINVEST-compliant, QA+DEV+Figma mapped"]
+    PBI --> ROLES["Phase 7: Role Summary\nPM / UX / Dev / QA / Compliance"]
+    ROLES --> GAPS["Phase 8: Open Questions & Gaps"]
+
+    GAPS --> PM["📋 PM: epics + KPIs"]
+    GAPS --> FIGMA["🖌️ Figma: screens + states"]
+    GAPS --> DEV["⚡ Dev: APIs + services"]
+    GAPS --> QA["🛡️ QA: test cases from AC"]
+    GAPS --> LEGAL["⚖️ Compliance: review items"]
+
+    style INPUT fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style BRD fill:#FAEEDA,stroke:#854F0B,color:#412402
+    style SRS fill:#E6F1FB,stroke:#185FA5,color:#042C53
+    style UX fill:#FBEAF0,stroke:#993556,color:#4B1528
+    style PBI fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+```
+
+**9 sections generated from one prompt:**
+
+| # | Section | Who Uses It |
+|---|---------|-------------|
+| 1 | Context & assumptions | PM, all stakeholders |
+| 2 | Research & feature landscape | PM, Strategy |
+| 3 | Super System Analysis | Architect, Dev leads |
+| 4 | BRD (Business Requirements) | PM, BA, Stakeholders |
+| 5 | SRS (System Requirements) | Dev, Tech leads |
+| 6 | UX/UI Blueprint | Figma designers, UX |
+| 7 | PBIs (Product Backlog) | Dev, QA, Scrum Master |
+| 8 | Role summary | Everyone — "what do I do now?" |
+| 9 | Open questions | PM — "what must we still decide?" |
+
+Each PBI includes **acceptance criteria** (QA-ready), **DEV notes** (service/API/data), **Figma mapping** (screens/states/components), and **research notes** (competitor reference).
+
+---
+
 ## Scale-Adaptive Tracks
 
 Navi automatically detects project complexity and recommends the right track:
@@ -287,13 +339,14 @@ flowchart TD
 
 ---
 
-## Skill Inventory (16 Skills)
+## Skill Inventory (17 Skills)
 
 | # | Skill | Purpose | Phase | Persona |
 |---|-------|---------|-------|---------|
 | ⭐ | `ai-personas` | 8 personas + party mode | ALL | — |
 | 0 | `project-navigator` | Scan state, recommend next action | META | 🧭 Navi |
 | 1 | `code-standards` | Coding standards & config generation | PLAN | 📐 Sage |
+| 1.5 | `super-spec` | **BRD + SRS + UX Blueprint + PBIs from minimal input** | PLAN | 📐 Sage |
 | 2 | `code-review` | 5-pass structured code review | VERIFY | 🛡️ Vigil |
 | 3 | `adversarial-review` | BREAK framework devil's advocate | VERIFY | 🔴 Havoc |
 | 4 | `security-audit` | OWASP + deps + secrets + infra | VERIFY | 🔴 Havoc |
@@ -505,6 +558,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 5.1.0 | 2026-03-17 | Added super-spec — BRD+SRS+UX Blueprint+PBI engine for Sage |
 | 5.0.0 | 2026-03-17 | test-architect, aegis-builder, skill-marketplace. Open-sourced. |
 | 4.0.0 | 2026-03-17 | Pixel (UX), sprint-tracker, retrospective, course-correction |
 | 3.0.0 | 2026-03-17 | ai-personas (8 personas + party mode) |
