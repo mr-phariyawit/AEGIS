@@ -4,7 +4,7 @@
 >
 > *"Standards defined in Markdown, enforced by AI, validated autonomously."*
 
-A complete set of **17 Claude Skills** with **8 AI personas**, **3 adaptive tracks**, **party mode**, a **skill marketplace**, and a **marketing pipeline** — transforming a solo developer or small team into a full-stack engineering organization.
+A complete set of **18 Claude Skills** with **8 AI personas**, **3 adaptive tracks**, **party mode**, a **skill marketplace**, and a **marketing pipeline** — transforming a solo developer or small team into a full-stack engineering organization.
 
 **100% free and open source.** MIT License. No paywalls. No gated content.
 
@@ -299,6 +299,73 @@ Each PBI includes **acceptance criteria** (QA-ready), **DEV notes** (service/API
 
 ---
 
+## Subagent Orchestration (Claude Code)
+
+AEGIS personas become **real parallel subagents** on Claude Code. The orchestrator dispatches them simultaneously, each with their own context window.
+
+```mermaid
+graph TD
+    CMD(["/aegis-pipeline"]) --> ORCH["🛡️ AEGIS Orchestrator"]
+    
+    ORCH -->|"parallel"| SAGE["📐 Sage\nstandards scan"]
+    ORCH -->|"parallel"| VIGIL["🛡️ Vigil\ncode review"]
+    ORCH -->|"parallel"| HAVOC["🔴 Havoc\nsecurity audit"]
+    ORCH -->|"parallel"| FORGE["🔧 Forge\ndebt scan"]
+    
+    SAGE --> SYNTH
+    VIGIL --> SYNTH
+    HAVOC --> SYNTH
+    FORGE --> SYNTH
+    
+    SYNTH["🧭 Navi\nsynthesize reports"] --> REPORT(["📊 AEGIS Report\nhealth score + actions"])
+
+    style CMD fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style ORCH fill:#F1EFE8,stroke:#5F5E5A,color:#2C2C2A
+    style SAGE fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style VIGIL fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+    style HAVOC fill:#FCEBEB,stroke:#A32D2D,color:#501313
+    style FORGE fill:#FAEEDA,stroke:#854F0B,color:#412402
+    style SYNTH fill:#F1EFE8,stroke:#5F5E5A,color:#2C2C2A
+    style REPORT fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+```
+
+### Commands
+
+| Command | What It Does | Agents |
+|---------|-------------|--------|
+| `/aegis-pipeline` | Full project analysis | 4 parallel → 2 dependent → Navi synthesis |
+| `/aegis-verify` | Pre-merge quality gate | Vigil + Havoc + Forge (3 parallel) |
+| `/aegis-launch` | Production readiness | All 6 + Navi GO/NO-GO decision |
+
+### Platform Compatibility
+
+| Platform | Mode | Speed |
+|----------|------|-------|
+| **Claude Code** | Parallel subagents (native) | ~2-3 min for full pipeline |
+| **Cowork** | Background tasks | ~3-5 min |
+| **Claude.ai** | Sequential fallback | ~10-15 min (same output) |
+
+### File Structure (Claude Code)
+
+```
+.claude/
+├── agents/           # 8 subagent definitions
+│   ├── sage.md       # Spec Architect
+│   ├── pixel.md      # UX Designer
+│   ├── bolt.md       # Developer
+│   ├── vigil.md      # Code Guardian
+│   ├── havoc.md      # Red Team
+│   ├── forge.md      # DevOps
+│   ├── muse.md       # Creative
+│   └── navi.md       # Navigator (synthesizer)
+└── commands/         # Orchestration commands
+    ├── aegis-pipeline.md
+    ├── aegis-verify.md
+    └── aegis-launch.md
+```
+
+---
+
 ## Scale-Adaptive Tracks
 
 Navi automatically detects project complexity and recommends the right track:
@@ -339,12 +406,13 @@ flowchart TD
 
 ---
 
-## Skill Inventory (17 Skills)
+## Skill Inventory (18 Skills)
 
 | # | Skill | Purpose | Phase | Persona |
 |---|-------|---------|-------|---------|
 | ⭐ | `ai-personas` | 8 personas + party mode | ALL | — |
 | 0 | `project-navigator` | Scan state, recommend next action | META | 🧭 Navi |
+| 0.5 | `aegis-orchestrator` | **Subagent dispatch — parallel agent execution** | META | 🧭 Navi |
 | 1 | `code-standards` | Coding standards & config generation | PLAN | 📐 Sage |
 | 1.5 | `super-spec` | **BRD + SRS + UX Blueprint + PBIs from minimal input** | PLAN | 📐 Sage |
 | 2 | `code-review` | 5-pass structured code review | VERIFY | 🛡️ Vigil |
@@ -558,6 +626,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 5.2.0 | 2026-03-18 | Added aegis-orchestrator — subagent dispatch with parallel execution |
 | 5.1.0 | 2026-03-17 | Added super-spec — BRD+SRS+UX Blueprint+PBI engine for Sage |
 | 5.0.0 | 2026-03-17 | test-architect, aegis-builder, skill-marketplace. Open-sourced. |
 | 4.0.0 | 2026-03-17 | Pixel (UX), sprint-tracker, retrospective, course-correction |
