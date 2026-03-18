@@ -43,6 +43,7 @@ graph TB
 
     subgraph EXECUTE["⚡ EXECUTE — Bolt"]
         AC["autonomous-coding"] --> AD["api-docs"]
+        BL["bug-lifecycle (debug)"]
     end
 
     subgraph VERIFY["🛡️ VERIFY — Vigil & Havoc"]
@@ -221,9 +222,11 @@ The installer automatically shows what's new since your installed version:
 
 | From | What's New |
 |------|-----------|
-| v1.x–v4.x → v5.2 | +test-architect, +aegis-builder, +skill-marketplace, +super-spec, +aegis-orchestrator, +8 subagents, +3 commands, MIT License |
-| v5.0 → v5.2 | +super-spec (BRD+SRS+UX+PBI engine), +aegis-orchestrator, +subagent definitions |
-| v5.1 → v5.2 | +aegis-orchestrator, +8 subagent definitions, +3 commands |
+| v1.x–v4.x → v5.4 | +test-architect, +aegis-builder, +skill-marketplace, +super-spec, +aegis-orchestrator, +bug-lifecycle, +heartbeat monitor, +8 subagents, +4 commands, MIT License |
+| v5.0 → v5.4 | +super-spec, +aegis-orchestrator, +bug-lifecycle, +heartbeat progress, +inline monitor |
+| v5.1 → v5.4 | +aegis-orchestrator, +subagent definitions, +bug-lifecycle, +heartbeat, +inline monitor |
+| v5.2 → v5.4 | +bug-lifecycle (7-stage debug workflow), +heartbeat progress, +aegis-monitor.sh |
+| v5.3 → v5.4 | +heartbeat progress system, +aegis-watch.sh, +aegis-monitor.sh, +/aegis-status command |
 
 All upgrades are **additive** — no breaking changes. See [UPGRADE.md](UPGRADE.md) for full migration guide, rollback procedures, and CI/CD integration.
 
@@ -279,7 +282,7 @@ graph LR
 | 🧭 **Navi** | Navigator / Project Guide | `project-navigator` | META | `"Navi"` / `"ทำอะไรต่อดี"` |
 | 📐 **Sage** | Spec Architect / Planner | `spec-kit`, `code-standards`, `super-spec` | PLAN | `"Sage"` / `"วางแผน"` |
 | 🖌️ **Pixel** | UX Designer | wireframes, user flows | PLAN | `"Pixel"` / `"ออกแบบ UI"` |
-| ⚡ **Bolt** | Developer / Builder | `autonomous-coding`, `api-docs` | EXECUTE | `"Bolt"` / `"เขียนโค้ด"` |
+| ⚡ **Bolt** | Developer / Debugger | `autonomous-coding`, `api-docs`, `bug-lifecycle` | EXECUTE | `"Bolt"` / `"เขียนโค้ด"` / `"debug"` |
 | 🛡️ **Vigil** | Code Guardian / Tester | `code-review`, `code-coverage` | VERIFY | `"Vigil"` / `"รีวิว"` |
 | 🔴 **Havoc** | Red Team / Security | `adversarial-review`, `security-audit` | VERIFY | `"Havoc"` / `"ท้าทาย"` |
 | 🔧 **Forge** | DevOps / Maintainer | `git-workflow`, `tech-debt-tracker`, `sprint-tracker`, `retrospective`, `course-correction` | FEEDBACK | `"Forge"` / `"จัดการหนี้"` |
@@ -620,6 +623,7 @@ Subagents use tokens independently — 4 parallel agents use roughly 4-7x tokens
     └── aegis-status.md      # Real-time agent progress
 
 aegis-watch.sh            # Terminal progress dashboard (run in separate terminal)
+aegis-monitor.sh          # Inline progress poller (run by main agent in chat)
 
 _aegis-output/            # Created at runtime by agents
 ├── .progress/            # Heartbeat files (auto-created)
@@ -966,7 +970,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 5.4.0 | 2026-03-19 | Heartbeat progress system, aegis-watch.sh, /aegis-status command |
+| 5.4.0 | 2026-03-19 | Heartbeat progress + inline monitor + aegis-watch.sh + /aegis-status |
 | 5.3.0 | 2026-03-18 | Added bug-lifecycle — 7-stage debug/reproduce/fix/retest/prevent workflow |
 | 5.2.0 | 2026-03-18 | Added aegis-orchestrator — subagent dispatch with parallel execution |
 | 5.1.0 | 2026-03-17 | Added super-spec — BRD+SRS+UX Blueprint+PBI engine for Sage |
