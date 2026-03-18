@@ -154,9 +154,9 @@ cd AEGIS
 unzip AEGIS-v5.0.0.zip -d /path/to/your/skills/
 ```
 
-### Upgrading
+### Upgrading from Previous Versions
 
-Already have AEGIS installed? The installer handles everything:
+Already have AEGIS installed? One command upgrades safely:
 
 ```bash
 cd AEGIS && git pull origin main && ./install.sh
@@ -178,15 +178,54 @@ flowchart LR
     style DONE fill:#E1F5EE,stroke:#0F6E56,color:#04342C
 ```
 
+#### What happens to your customizations?
+
+```mermaid
+flowchart TD
+    SCAN["Installer scans\nyour skills/"] --> C1{"User-created\nskill?"}
+    C1 -->|"e.g. my-custom-skill/"| SAFE["✅ Backed up\nand restored\nautomatically"]
+    C1 -->|"No"| C2{"Modified\ncore skill?"}
+    C2 -->|"e.g. edited code-review"| MERGE["📝 New version installed\nYour version saved as\nSKILL.md.user-backup\nMerge manually"]
+    C2 -->|"Unchanged"| SKIP["⏭️ Updated\nin-place"]
+
+    style SAFE fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+    style MERGE fill:#FAEEDA,stroke:#854F0B,color:#412402
+    style SKIP fill:#E6F1FB,stroke:#185FA5,color:#042C53
+```
+
+| Scenario | What Installer Does |
+|----------|-------------------|
+| **Fresh install** (no existing skills) | Install everything, create `.aegis-version` |
+| **Legacy** (skills exist, no version file) | Detect from SKILL.md files → full backup → upgrade → create version file |
+| **Same version** | Skip (use `--force` to reinstall) |
+| **Older version** | Backup → save customs → install new → restore customs → show migration notes |
+| **User-created skills** (e.g., `my-skill/`) | Automatically detected, backed up, restored after upgrade |
+| **Modified core skills** (e.g., edited `code-review/`) | New version installed + your version saved as `.user-backup` |
+| **Modified agent definitions** (e.g., edited `sage.md`) | Your version saved as `.bak`, new version installed |
+
+#### Installer Commands
+
 | Command | What It Does |
 |---------|-------------|
+| `./install.sh` | Install or upgrade (auto-detects) |
 | `./install.sh --check` | Show installed vs available version |
-| `./install.sh --diff` | Preview changes (dry run) |
-| `./install.sh --backup` | Backup only |
-| `./install.sh --restore` | List backups |
-| `./install.sh --force` | Reinstall same version |
+| `./install.sh --diff` | Preview what would change (dry run) |
+| `./install.sh --backup` | Backup current installation only |
+| `./install.sh --restore` | List available backups |
+| `./install.sh --force` | Reinstall even if same version |
+| `./install.sh /custom/path` | Install to custom skills directory |
 
-Your custom skills and modifications are automatically detected, backed up, and restored. See [UPGRADE.md](UPGRADE.md) for full details.
+#### Version Migration Notes
+
+The installer automatically shows what's new since your installed version:
+
+| From | What's New |
+|------|-----------|
+| v1.x–v4.x → v5.2 | +test-architect, +aegis-builder, +skill-marketplace, +super-spec, +aegis-orchestrator, +8 subagents, +3 commands, MIT License |
+| v5.0 → v5.2 | +super-spec (BRD+SRS+UX+PBI engine), +aegis-orchestrator, +subagent definitions |
+| v5.1 → v5.2 | +aegis-orchestrator, +8 subagent definitions, +3 commands |
+
+All upgrades are **additive** — no breaking changes. See [UPGRADE.md](UPGRADE.md) for full migration guide, rollback procedures, and CI/CD integration.
 
 ### Verify Installation
 
@@ -335,9 +374,125 @@ Each PBI includes **acceptance criteria** (QA-ready), **DEV notes** (service/API
 
 ---
 
-## Subagent Orchestration (Claude Code)
+## Subagent Orchestration
 
-AEGIS personas become **real parallel subagents** on Claude Code. The orchestrator dispatches them simultaneously, each with their own context window.
+### What is a Subagent?
+
+A subagent is a **separate Claude instance** spawned by the main agent to handle a focused task. Each subagent gets its own fresh 200K-token context window, works independently, and returns only its final result — keeping the parent's context clean.
+
+```mermaid
+sequenceDiagram
+    participant You
+    participant Main as Main Agent<br/>(200K context)
+    participant Sage as Sage Subagent<br/>(200K context)
+    participant FS as File System
+
+    You->>Main: /aegis-pipeline
+    Main->>Main: Read .claude/agents/sage.md
+    Main->>Sage: Task tool: spawn with prompt
+    Note over Sage: Fresh context starts here
+    Sage->>FS: Read SKILL.md
+    Sage->>FS: Read src/*.ts
+    Sage->>FS: Run: eslint --check
+    Sage->>FS: Write: standards-report.md
+    Note over Sage: All tool calls stay<br/>inside Sage's context
+    Sage->>Main: Return summary (~500 tokens)
+    Note over Main: Main gets summary only<br/>not 50K of intermediate work
+    Main->>You: AEGIS Report
+```
+
+**The key insight**: the parent receives the signal, not the noise. A subagent might read 50 files and run 20 commands, but the parent only sees the final summary. This prevents **context rot** — the degradation that happens when a single context window fills up with accumulated intermediate work.
+
+### How It Works Under the Hood
+
+Claude Code uses a built-in **Task tool** to spawn subagents. When the main agent calls the Task tool, Claude Code creates a new Claude instance with:
+
+```mermaid
+graph LR
+    TASK["Task Tool\ncalled by Main"] --> CREATE["New Claude\ninstance created"]
+    CREATE --> LOAD["System prompt\nloaded from\n.claude/agents/*.md"]
+    LOAD --> EXEC["Agent executes\nindependently\n(read/write/bash)"]
+    EXEC --> RETURN["Final message\nreturned to Main"]
+
+    style TASK fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style CREATE fill:#E6F1FB,stroke:#185FA5,color:#042C53
+    style LOAD fill:#FAEEDA,stroke:#854F0B,color:#412402
+    style EXEC fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+    style RETURN fill:#F1EFE8,stroke:#5F5E5A,color:#2C2C2A
+```
+
+**What each subagent receives:**
+- Custom system prompt (from `.claude/agents/*.md`)
+- The prompt string from parent (the **only** communication channel)
+- Access to the same tools as main agent: Read, Write, Bash, Glob, Grep
+- Its own fresh 200K-token context window
+
+**What each subagent does NOT have:**
+- Access to the parent's conversation history
+- Ability to spawn sub-sub-agents (only 1 level deep)
+- Ability to communicate directly with other subagents
+- Access to UI tools (no browser, no Figma)
+
+### Three Execution Patterns
+
+```mermaid
+graph TD
+    subgraph PAR["Pattern 1: Parallel"]
+        P_START(["Start"]) --> P_A["Sage"] & P_B["Vigil"] & P_C["Havoc"] & P_D["Forge"]
+        P_A & P_B & P_C & P_D --> P_END(["Collect"])
+    end
+
+    subgraph SEQ["Pattern 2: Sequential"]
+        S1["Vigil: review"] --> S2["Vigil: coverage\n(reads review output)"]
+    end
+
+    subgraph FAN["Pattern 3: Fan-in"]
+        F_A["Sage report"] & F_B["Vigil report"] & F_C["Havoc report"] & F_D["Forge report"] --> F_NAVI["Navi:\nsynthesize all"]
+    end
+
+    style PAR fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style SEQ fill:#FAEEDA,stroke:#854F0B,color:#412402
+    style FAN fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+```
+
+| Pattern | When to Use | AEGIS Example |
+|---------|-------------|---------------|
+| **Parallel** | Tasks are independent, touch different files | Phase 1: Sage + Vigil + Havoc + Forge scan simultaneously |
+| **Sequential** | Output of task A is input for task B | Vigil review → Vigil coverage (reads review to focus on critical files) |
+| **Fan-in** | Multiple results need synthesis | Navi reads all agent reports → produces unified AEGIS Report |
+
+### Context Isolation — Why It Matters
+
+```mermaid
+graph LR
+    subgraph BAD["❌ Without subagents"]
+        ONE["Single 200K context"] --> FULL["Context fills up\nwith intermediate work"]
+        FULL --> ROT["Quality degrades\n(context rot)"]
+    end
+
+    subgraph GOOD["✅ With subagents"]
+        MAIN["Main: 200K"] --> SA["Sage: 200K"]
+        MAIN --> VI["Vigil: 200K"]
+        MAIN --> HA["Havoc: 200K"]
+        MAIN --> FO["Forge: 200K"]
+        SA & VI & HA & FO -->|"summaries only"| SUM["Main receives\n~2K tokens total"]
+    end
+
+    style BAD fill:#FCEBEB,stroke:#A32D2D,color:#501313
+    style GOOD fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+```
+
+| Without Subagents | With Subagents |
+|-------------------|---------------|
+| 1 context window shared for everything | Each agent gets fresh 200K context |
+| Quality degrades as context fills | Quality stays consistent per agent |
+| Sequential execution only | Up to 10 parallel agents |
+| ~10-15 min for full pipeline | ~2-3 min for full pipeline |
+| All intermediate work pollutes context | Only summaries returned to parent |
+
+### How AEGIS Uses Subagents
+
+AEGIS personas become real subagents on Claude Code. The orchestrator dispatches them simultaneously, each with their own context window.
 
 ```mermaid
 graph TD
@@ -365,39 +520,63 @@ graph TD
     style REPORT fill:#E1F5EE,stroke:#0F6E56,color:#04342C
 ```
 
-### Commands
+**Each agent only writes to its own output file** — no conflicts:
 
-| Command | What It Does | Agents |
-|---------|-------------|--------|
-| `/aegis-pipeline` | Full project analysis | 4 parallel → 2 dependent → Navi synthesis |
+```
+_aegis-output/
+├── standards-report.md    (Sage)
+├── review-report.md       (Vigil)
+├── coverage-report.md     (Vigil)
+├── security-report.md     (Havoc)
+├── debt-report.md         (Forge)
+├── git-report.md          (Forge)
+├── docs-report.md         (Bolt)
+└── AEGIS-REPORT.md        (Navi — synthesis of all above)
+```
+
+### Orchestration Commands
+
+| Command | What It Does | Agents Dispatched |
+|---------|-------------|-------------------|
+| `/aegis-pipeline` | Full project analysis | Phase 1: 4 parallel → Phase 2: 2 dependent → Phase 3: Navi synthesis |
 | `/aegis-verify` | Pre-merge quality gate | Vigil + Havoc + Forge (3 parallel) |
-| `/aegis-launch` | Production readiness | All 6 + Navi GO/NO-GO decision |
+| `/aegis-launch` | Production readiness | All 6 agents parallel → Navi GO/NO-GO decision |
 
 ### Platform Compatibility
 
-| Platform | Mode | Speed |
-|----------|------|-------|
-| **Claude Code** | Parallel subagents (native) | ~2-3 min for full pipeline |
-| **Cowork** | Background tasks | ~3-5 min |
-| **Claude.ai** | Sequential fallback | ~10-15 min (same output) |
+| Platform | Subagent Support | How |
+|----------|-----------------|-----|
+| **Claude Code** | ✅ Native parallel (up to 10) | `.claude/agents/` + Task tool auto-dispatch |
+| **Agent SDK** | ✅ Programmatic | `agents` parameter in SDK calls |
+| **Cowork** | ✅ Partial | Background task execution |
+| **Claude.ai** | ⚠️ Sequential fallback | Persona switching in single context (same output, ~5x slower) |
 
-### File Structure (Claude Code)
+### Cost Awareness
+
+Subagents use tokens independently — 4 parallel agents use roughly 4-7x tokens of a single agent. AEGIS optimizes cost by:
+
+- Using **Sonnet** for read-only agents (Sage, Forge) — cheaper, fast enough
+- Reserving **Opus** for reasoning-heavy agents (Havoc adversarial, Navi synthesis)
+- Keeping all agents **bounded and read-heavy** — they scan and report, never implement
+- Returning **summaries only** — parent context stays small
+
+### Claude Code File Structure
 
 ```
 .claude/
-├── agents/           # 8 subagent definitions
-│   ├── sage.md       # Spec Architect
-│   ├── pixel.md      # UX Designer
-│   ├── bolt.md       # Developer
-│   ├── vigil.md      # Code Guardian
-│   ├── havoc.md      # Red Team
-│   ├── forge.md      # DevOps
-│   ├── muse.md       # Creative
-│   └── navi.md       # Navigator (synthesizer)
-└── commands/         # Orchestration commands
-    ├── aegis-pipeline.md
-    ├── aegis-verify.md
-    └── aegis-launch.md
+├── agents/           # 8 subagent definitions (auto-discovered by Claude Code)
+│   ├── sage.md       # 📐 Spec Architect — standards + spec analysis
+│   ├── pixel.md      # 🖌️ UX Designer — wireframes + user flows
+│   ├── bolt.md       # ⚡ Developer — implementation + API docs
+│   ├── vigil.md      # 🛡️ Code Guardian — review + coverage + test architect
+│   ├── havoc.md      # 🔴 Red Team — security + adversarial
+│   ├── forge.md      # 🔧 DevOps — git + debt + sprint + retro + course
+│   ├── muse.md       # 🎨 Creative — trends + content + images + delivery
+│   └── navi.md       # 🧭 Navigator — synthesis + recommendations
+└── commands/         # Orchestration commands (invoke with /command-name)
+    ├── aegis-pipeline.md    # Full pipeline dispatch
+    ├── aegis-verify.md      # Pre-merge gate
+    └── aegis-launch.md      # Production readiness check
 ```
 
 ---
