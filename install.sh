@@ -10,7 +10,7 @@
 
 set -e
 
-AEGIS_VERSION="5.2.0"
+AEGIS_VERSION="5.3.0"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 FORCE_MODE=false
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
@@ -35,6 +35,7 @@ CORE_SKILLS=(
   git-workflow api-docs tech-debt-tracker
   sprint-tracker retrospective course-correction
   aegis-builder skill-marketplace super-spec
+  bug-lifecycle
 )
 AGENT_FILES=(sage pixel bolt vigil havoc forge muse navi)
 COMMAND_FILES=(aegis-pipeline aegis-verify aegis-launch)

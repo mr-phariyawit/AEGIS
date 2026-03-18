@@ -4,7 +4,7 @@
 >
 > *"Standards defined in Markdown, enforced by AI, validated autonomously."*
 
-A complete set of **18 Claude Skills** with **8 AI personas**, **3 adaptive tracks**, **party mode**, a **skill marketplace**, and a **marketing pipeline** — transforming a solo developer or small team into a full-stack engineering organization.
+A complete set of **19 Claude Skills** with **8 AI personas**, **3 adaptive tracks**, **party mode**, a **skill marketplace**, and a **marketing pipeline** — transforming a solo developer or small team into a full-stack engineering organization.
 
 **100% free and open source.** MIT License. No paywalls. No gated content.
 
@@ -621,13 +621,13 @@ flowchart TD
 
 ---
 
-## Skill Inventory (18 Skills)
+## Skill Inventory (19 Skills)
 
 | # | Skill | Purpose | Phase | Persona |
 |---|-------|---------|-------|---------|
 | ⭐ | `ai-personas` | 8 personas + party mode | ALL | — |
 | 0 | `project-navigator` | Scan state, recommend next action | META | 🧭 Navi |
-| 0.5 | `aegis-orchestrator` | **Subagent dispatch — parallel agent execution** | META | 🧭 Navi |
+| 0.5 | `aegis-orchestrator` | Subagent dispatch — parallel agent execution | META | 🧭 Navi |
 | 1 | `code-standards` | Coding standards & config generation | PLAN | 📐 Sage |
 | 1.5 | `super-spec` | **BRD + SRS + UX Blueprint + PBIs from minimal input** | PLAN | 📐 Sage |
 | 2 | `code-review` | 5-pass structured code review | VERIFY | 🛡️ Vigil |
@@ -643,6 +643,7 @@ flowchart TD
 | 12 | `test-architect` | Enterprise test strategy + quality gates | VERIFY | 🛡️ Vigil |
 | 13 | `aegis-builder` | Create custom skills/personas/modules | META | — |
 | 14 | `skill-marketplace` | Discover, share, install community skills | META | — |
+| 15 | `bug-lifecycle` | **Debug, reproduce, fix, retest, prevent** | ALL | ⚡ Bolt + 🛡️ Vigil + 🔴 Havoc |
 
 ### Skill Chaining Flow
 
@@ -766,6 +767,77 @@ graph LR
 
 ---
 
+## Bug Lifecycle — Debug, Reproduce, Fix, Retest
+
+Every bug follows a **7-stage workflow** — preventing the most common mistake of jumping straight to "fix" without understanding the problem.
+
+```mermaid
+graph LR
+    R["1. Report\n& Triage"] --> RE["2. Reproduce"]
+    RE --> RC["3. Root\nCause"]
+    RC --> FX["4. Fix"]
+    FX --> RT["5. Retest"]
+    RT --> VS["6. Verify\nStaging"]
+    VS --> PR["7. Prevent"]
+
+    style R fill:#F1EFE8,stroke:#5F5E5A,color:#2C2C2A
+    style RE fill:#E6F1FB,stroke:#185FA5,color:#042C53
+    style RC fill:#FCEBEB,stroke:#A32D2D,color:#501313
+    style FX fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style RT fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+    style VS fill:#FAEEDA,stroke:#854F0B,color:#412402
+    style PR fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+```
+
+### Who Does What?
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Forge as 🔧 Forge<br/>(Triage)
+    participant Bolt as ⚡ Bolt<br/>(Debug & Fix)
+    participant Vigil as 🛡️ Vigil<br/>(Retest)
+    participant Havoc as 🔴 Havoc<br/>(Prevent)
+
+    User->>Forge: Bug report received
+    Forge->>Forge: Stage 1: Triage severity
+    Forge->>Bolt: Assign: reproduce & fix
+
+    Bolt->>Bolt: Stage 2: Reproduce (write failing test)
+    Bolt->>Bolt: Stage 3: Root cause (5 Whys)
+    Bolt->>Bolt: Stage 4: Fix (root cause, not symptom)
+    Bolt->>Vigil: Hand off for retest
+
+    Vigil->>Vigil: Stage 5: Regression test
+    Vigil->>Forge: Ready for staging
+
+    Forge->>Forge: Stage 6: Deploy + verify staging
+    Forge->>Forge: Deploy to production
+
+    Forge->>Havoc: Post-mortem needed?
+    Havoc->>Havoc: Stage 7: Systemic analysis
+    Havoc->>User: Prevention actions
+```
+
+### Severity-Based Flow
+
+| Severity | Flow | Max Time |
+|----------|------|----------|
+| **P0 Hotfix** (production down) | Triage(5m) → Reproduce(15m) → Quick fix → Retest → Deploy → Post-mortem next day | 2 hours |
+| **P1 Same-day** | Full 7 stages compressed to same day | 8 hours |
+| **P2 Sprint** | Full 7 stages at normal pace, treated as sprint story | Sprint |
+| **P3 Backlog** | Full 7 stages when capacity allows | Next sprint+ |
+
+### Key Rules
+
+- **Never skip reproduce** — no reproduction means you don't understand the bug
+- **Write failing test BEFORE fixing** — if you can't test it, you don't understand it
+- **Fix root cause, not symptoms** — "float for money" is the cause, rounding is the symptom
+- **Every fix adds a permanent regression test** — the bug can never come back
+- **Post-mortem for P0/P1** — feeds prevention actions into standards, retro, and monitoring
+
+---
+
 ## Extending AEGIS
 
 ```mermaid
@@ -842,6 +914,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 5.3.0 | 2026-03-18 | Added bug-lifecycle — 7-stage debug/reproduce/fix/retest/prevent workflow |
 | 5.2.0 | 2026-03-18 | Added aegis-orchestrator — subagent dispatch with parallel execution |
 | 5.1.0 | 2026-03-17 | Added super-spec — BRD+SRS+UX Blueprint+PBI engine for Sage |
 | 5.0.0 | 2026-03-17 | test-architect, aegis-builder, skill-marketplace. Open-sourced. |
