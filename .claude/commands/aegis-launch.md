@@ -1,53 +1,36 @@
 ---
-description: "Run AEGIS launch readiness check — all agents verify production readiness, Navi makes GO/NO-GO decision"
+description: "Run AEGIS launch readiness — all agents verify production readiness with live progress, Navi makes GO/NO-GO"
 argument-hint: ""
 ---
 
 # AEGIS Launch Readiness
 
-Full pre-production check. All agents verify their domain, Navi makes the final GO/NO-GO call.
+Full pre-production check with live progress. All agents verify, Navi decides.
 
-## Setup
+## Step 1: Setup
 ```bash
-mkdir -p _aegis-output
+mkdir -p _aegis-output/.progress
+rm -f _aegis-output/.progress/*.json
 ```
 
-## Execution: 6 agents in parallel, then Navi synthesis
+## Step 2: Dispatch 6 agents in parallel (all background)
 
-**Parallel dispatch — all 6 simultaneously:**
+1. **Sage** (bg): "All spec requirements implemented? Standards compliance score? Progress → _aegis-output/.progress/sage.json"
+2. **Vigil** (bg): "Code review clean? Coverage meets 80%/90% thresholds? Progress → _aegis-output/.progress/vigil.json"
+3. **Havoc** (bg): "Security audit clean? No critical CVEs? No secrets? Progress → _aegis-output/.progress/havoc.json"
+4. **Forge** (bg): "Debt score ≥70? Git clean? Sprint complete? Progress → _aegis-output/.progress/forge.json"
+5. **Bolt** (bg): "API docs current? No drift? Progress → _aegis-output/.progress/bolt.json"
+6. **Navi pre-scan** (bg): "9-criteria readiness checklist. Progress → _aegis-output/.progress/navi.json"
 
-1. **Sage** — "Check: are all spec requirements implemented? Any undocumented features? Standards compliance score?"
-2. **Vigil** — "Check: code review clean? Test coverage meets thresholds (80% overall, 90% auth/payment)? Quality gates pass?"
-3. **Havoc** — "Check: security audit clean? No critical/high CVEs? No hardcoded secrets? OWASP Top 10 clear?"
-4. **Forge** — "Check: tech debt score acceptable (>=70)? Git hygiene clean? Sprint complete? All stories done?"
-5. **Bolt** — "Check: API docs current? No drift between docs and endpoints?"
-6. **Navi (pre-scan)** — "Check: 9-criteria readiness checklist. List which criteria pass and which fail."
-
-**After all complete — Navi synthesis:**
-
-"Read ALL reports in _aegis-output/. Make a GO / NO-GO decision with evidence. List blockers for NO-GO. Save to _aegis-output/LAUNCH-DECISION.md"
-
-## Launch Decision Format
-
-```markdown
-# 🛡️ AEGIS Launch Decision
-
-## Verdict: ✅ GO / ❌ NO-GO
-
-## Checklist
-- [ ] Specs covered: X/Y requirements implemented
-- [ ] Standards: X% compliant
-- [ ] Code review: X critical, Y warnings
-- [ ] Security: X findings (critical: Y)
-- [ ] Coverage: X% (target: 80%)
-- [ ] Debt score: X (target: >=70)
-- [ ] API docs: X endpoints documented, Y drifted
-- [ ] Sprint: X/Y stories complete
-- [ ] Git: commit messages clean, PR template used
-
-## Blockers (if NO-GO)
-[list with assigned persona for each fix]
-
-## Estimated Time to GO
-[based on blocker complexity]
+## Step 3: Monitor (IMMEDIATELY)
+```bash
+bash aegis-monitor.sh 300 5
 ```
+
+## Step 4: Navi Synthesis
+
+After all done, dispatch Navi: "Read ALL reports. Make GO / NO-GO decision with evidence. Save to _aegis-output/LAUNCH-DECISION.md"
+
+## Step 5: Present Decision
+
+Read `_aegis-output/LAUNCH-DECISION.md` and present the verdict.

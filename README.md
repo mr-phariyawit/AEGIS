@@ -545,40 +545,42 @@ _aegis-output/
 
 ### Progress Monitoring (Heartbeat System)
 
-Every AEGIS agent writes a progress file after each step — solving the "silent agent" problem where agents appear stuck with no visible feedback.
+Every AEGIS agent writes a progress file after each step — solving the "silent agent" problem where agents appear stuck with no visible feedback. The main agent runs an **inline monitor** that shows live updates directly in the chat.
 
 ```mermaid
 graph LR
-    AG["Agent does\na step"] --> WR["Writes progress\nto JSON file"]
-    WR --> AG
-    WR --> FS[".progress/\nagent.json"]
-    FS --> WATCH["aegis-watch.sh\npolls every 2s"]
-    FS --> CMD["/aegis-status\non demand"]
+    DISPATCH["Orchestrator\ndispatches agents"] --> BG["Agents work\nin background"]
+    DISPATCH --> MON["aegis-monitor.sh\nruns inline"]
+    BG --> FS["Write .progress/\nagent.json"]
+    FS --> MON
+    MON --> USER["User sees\nlive progress"]
 
-    style AG fill:#E6F1FB,stroke:#185FA5,color:#042C53
-    style WR fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+    style DISPATCH fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style BG fill:#E6F1FB,stroke:#185FA5,color:#042C53
+    style MON fill:#E1F5EE,stroke:#0F6E56,color:#04342C
     style FS fill:#FAEEDA,stroke:#854F0B,color:#412402
-    style WATCH fill:#EEEDFE,stroke:#534AB7,color:#26215C
-    style CMD fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style USER fill:#E1F5EE,stroke:#0F6E56,color:#04342C
 ```
 
-**Monitor in a separate terminal:**
+**What the user sees in chat (live, updating every 5s):**
+
+```
+  🛡️ AEGIS — Monitoring agents...
+  ─────────────────────────────────────────
+  🔄 sage     ████████████░░░░░░░░  60%  scanning src/services
+  🔄 vigil    ██████████░░░░░░░░░░  50%  pass 3/5: performance
+  ✅ havoc    ████████████████████ 100%  complete
+  🔄 forge    ████████░░░░░░░░░░░░  40%  npm audit             ⚠️ stall(45s)
+  ─────────────────────────────────────────
+  ✅ All agents done! (125s)
+```
+
+**Three signals:** alive (bar moves), remaining (% + step), problem (⚠️ stall detection if >30s silent)
+
+**Or monitor from a separate terminal:**
 ```bash
 ./aegis-watch.sh
 ```
-
-**Output:**
-```
-  🛡️  AEGIS Agent Status
-  ══════════════════════════════════════════════════
-  AGENT      STATUS       PROG   STEP                         HEALTH
-  sage       🟢 running   ████████░░  75%  scanning src/services       ♥ 3s ago
-  vigil      🟢 running   ██████░░░░  60%  pass 3/5: performance      ♥ 1s ago
-  havoc      ✅ done       ██████████ 100%  complete
-  forge      🟢 running   ████░░░░░░  40%  npm audit                  ♥ 2s ago
-```
-
-**Stall detection:** if an agent hasn't updated for 30+ seconds → shows `⚠️ stalled`
 
 ### Platform Compatibility
 

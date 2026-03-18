@@ -268,8 +268,14 @@ if [ -f "${SCRIPT_DIR}/aegis-watch.sh" ]; then
   cp "${SCRIPT_DIR}/aegis-watch.sh" "$dest_watch"
   chmod +x "$dest_watch"
   echo "  📊 Installed aegis-watch.sh"
-  echo ""
 fi
+if [ -f "${SCRIPT_DIR}/aegis-monitor.sh" ]; then
+  dest_mon="$(dirname "$SKILLS_DIR")/aegis-monitor.sh"
+  cp "${SCRIPT_DIR}/aegis-monitor.sh" "$dest_mon"
+  chmod +x "$dest_mon"
+  echo "  📊 Installed aegis-monitor.sh"
+fi
+echo ""
 
 restore_custom; echo ""
 echo "$AEGIS_VERSION" > "$VERSION_FILE"

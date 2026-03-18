@@ -9,6 +9,32 @@ description: "Autonomous multi-agent orchestrator that dispatches AEGIS personas
 
 The orchestrator transforms AEGIS from a sequential skill system into a **parallel agentic framework**. Instead of invoking personas one-by-one, the orchestrator dispatches them as independent subagents — each with their own context window, focused scope, and specialized tools.
 
+## Golden Rule: NEVER Leave the User in the Dark
+
+After dispatching subagents, the main agent MUST immediately run the inline progress monitor:
+
+```bash
+bash aegis-monitor.sh 300 5
+```
+
+This prints live status updates every 5 seconds so the user always sees:
+```
+  🛡️ AEGIS — Monitoring agents...
+  ─────────────────────────────────────────
+  🔄 sage     ████████████░░░░░░░░  60%  scanning src/services
+  🔄 vigil    ██████████░░░░░░░░░░  50%  pass 3/5: performance
+  ✅ havoc    ████████████████████ 100%  complete
+  🔄 forge    ████████░░░░░░░░░░░░  40%  npm audit             ⚠️ stall(45s)
+  ─────────────────────────────────────────
+```
+
+**Why:** Without this, the user sees nothing while agents work in background — it looks like the system is frozen. This is the #1 UX complaint with subagent systems. The monitor solves it by polling heartbeat files that each agent writes after every step.
+
+**Three signals the user needs:**
+1. **Is it alive?** → progress bar moves, last active timestamp
+2. **How much longer?** → progress percentage + step description
+3. **Is there a problem?** → stall detection (⚠️ if no update for 30s)
+
 ## Platform Capabilities
 
 | Platform | Subagent Support | Parallelism | How |

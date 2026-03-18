@@ -1,28 +1,31 @@
 ---
-description: "Run AEGIS verify gate — parallel code review + security audit + git check before merge"
+description: "Run AEGIS verify gate — parallel code review + security + git check with live progress"
 argument-hint: "[optional: file or PR to review]"
 ---
 
 # AEGIS Verify Gate
 
-Pre-merge quality check using parallel subagents.
+Pre-merge quality check with live progress monitoring.
 
-## Setup
+## Step 1: Setup
 ```bash
 mkdir -p _aegis-output/.progress
+rm -f _aegis-output/.progress/*.json
 ```
 
-## Execution: Dispatch 3 agents in parallel
+## Step 2: Dispatch 3 agents in parallel (background)
 
-**Agent 1 — Vigil (Review + Coverage)**
-Use the `vigil` agent. Task: "Perform 5-pass code review on staged/changed files. Then analyze test coverage on critical paths. Read skills/code-review/SKILL.md and skills/code-coverage/SKILL.md. Save review to _aegis-output/review-report.md and coverage to _aegis-output/coverage-report.md"
+**Vigil** (background): "5-pass code review + test coverage on changed files. Write progress to _aegis-output/.progress/vigil.json after EVERY step. Save to _aegis-output/review-report.md and _aegis-output/coverage-report.md"
 
-**Agent 2 — Havoc (Security)**
-Use the `havoc` agent. Task: "Run security audit on changed files. Check for secrets, injection patterns, auth bypasses. Read skills/security-audit/SKILL.md. Save to _aegis-output/security-report.md"
+**Havoc** (background): "Security audit on changed files — secrets, injection, auth bypass. Write progress to _aegis-output/.progress/havoc.json after EVERY step. Save to _aegis-output/security-report.md"
 
-**Agent 3 — Forge (Git Hygiene)**
-Use the `forge` agent. Task: "Validate commit messages follow conventional commits format. Check branch naming. Verify PR template is filled. Read skills/git-workflow/SKILL.md. Save to _aegis-output/git-report.md"
+**Forge** (background): "Validate commit messages, branch naming, PR template. Write progress to _aegis-output/.progress/forge.json after EVERY step. Save to _aegis-output/git-report.md"
 
-## After Completion
+## Step 3: Monitor (IMMEDIATELY after dispatch)
+```bash
+bash aegis-monitor.sh 180 5
+```
 
-Synthesize results and report: PASS (no critical) / WARN (warnings only) / FAIL (critical findings).
+## Step 4: Present Verdict
+
+Read all reports. Synthesize: **PASS** (no critical) / **WARN** (warnings only) / **FAIL** (critical findings).
