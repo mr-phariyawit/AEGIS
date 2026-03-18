@@ -10,7 +10,7 @@
 
 set -e
 
-AEGIS_VERSION="5.3.0"
+AEGIS_VERSION="5.4.0"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 FORCE_MODE=false
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
@@ -38,7 +38,7 @@ CORE_SKILLS=(
   bug-lifecycle
 )
 AGENT_FILES=(sage pixel bolt vigil havoc forge muse navi)
-COMMAND_FILES=(aegis-pipeline aegis-verify aegis-launch)
+COMMAND_FILES=(aegis-pipeline aegis-verify aegis-launch aegis-status)
 
 echo ""
 echo "  ╔═══════════════════════════════════════════════╗"
@@ -179,6 +179,8 @@ migration_notes() {
   [[ "$from" < "5.0.0" ]] && echo "  v5.0: test-architect, aegis-builder, skill-marketplace, MIT License"
   [[ "$from" < "5.1.0" ]] && echo "  v5.1: super-spec (BRD+SRS+UX+PBI engine for Sage)"
   [[ "$from" < "5.2.0" ]] && echo "  v5.2: aegis-orchestrator, 8 subagent definitions, 3 commands"
+  [[ "$from" < "5.3.0" ]] && echo "  v5.3: bug-lifecycle (7-stage debug/reproduce/fix/retest/prevent)"
+  [[ "$from" < "5.4.0" ]] && echo "  v5.4: heartbeat progress system, aegis-watch.sh, /aegis-status command"
 }
 
 # ═══ Handle flags ═══
@@ -259,6 +261,16 @@ esac
 install_skills; echo ""
 install_agents; echo ""
 install_commands; echo ""
+
+# Install aegis-watch.sh
+if [ -f "${SCRIPT_DIR}/aegis-watch.sh" ]; then
+  dest_watch="$(dirname "$SKILLS_DIR")/aegis-watch.sh"
+  cp "${SCRIPT_DIR}/aegis-watch.sh" "$dest_watch"
+  chmod +x "$dest_watch"
+  echo "  📊 Installed aegis-watch.sh"
+  echo ""
+fi
+
 restore_custom; echo ""
 echo "$AEGIS_VERSION" > "$VERSION_FILE"
 migration_notes "$V"

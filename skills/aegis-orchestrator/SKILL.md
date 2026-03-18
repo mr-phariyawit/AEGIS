@@ -300,6 +300,106 @@ Phase 1: Parallel    Phase 2: Synthesis
 
 4. **Read-only source** — during VERIFY mode, agents only READ source code, never modify it
 
+## Progress Reporting (Heartbeat System)
+
+Every AEGIS subagent MUST report progress to the filesystem after each major step. This solves the "silent agent" problem — where agents appear stuck because there's no visible feedback.
+
+### How It Works
+
+```
+Agent starts → writes progress JSON → does step 1 → updates JSON → step 2 → updates → ... → done
+
+Main agent or user can poll:  cat _aegis-output/.progress/sage.json
+Watch script auto-refreshes:  ./aegis-watch.sh
+Command shortcut:             /aegis-status
+```
+
+### Progress File Format
+
+Each agent writes to `_aegis-output/.progress/{agent-name}.json`:
+
+```json
+{
+  "agent": "sage",
+  "status": "running",
+  "step": "scanning src/services/",
+  "progress": 65,
+  "detail": "12 of 18 files checked",
+  "findings_so_far": 3,
+  "started_at": "09:14:30",
+  "last_active": "09:15:03",
+  "estimated_remaining": "~45s"
+}
+```
+
+### Status Values
+
+| Status | Meaning | Display |
+|--------|---------|---------|
+| `starting` | Agent spawned, loading skill | 🔵 Initializing |
+| `running` | Actively working | 🟢 Running |
+| `done` | Completed successfully | ✅ Done |
+| `error` | Failed with error | 🔴 Error |
+
+### Stall Detection
+
+If `last_active` timestamp is older than 30 seconds from current time, the watch script displays:
+
+```
+⚠️  sage: possibly stalled (last active 45s ago)
+```
+
+This prevents false confidence from a progress bar that stopped updating.
+
+### Agent Progress Instructions
+
+Every agent definition MUST include this instruction block:
+
+```markdown
+## Progress Reporting
+After EVERY major step, update your progress file:
+
+mkdir -p _aegis-output/.progress
+cat > _aegis-output/.progress/{your-name}.json << 'EOF'
+{
+  "agent": "{your-name}",
+  "status": "running",
+  "step": "{what you just did}",
+  "progress": {0-100},
+  "detail": "{specifics}",
+  "findings_so_far": {count},
+  "started_at": "{HH:MM:SS when you started}",
+  "last_active": "{HH:MM:SS now}"
+}
+EOF
+
+Write progress at these checkpoints:
+1. Agent started (progress: 0, status: starting)
+2. After reading skill files (progress: 10)
+3. After each major scan/analysis step (progress: 20-90)
+4. On completion (progress: 100, status: done)
+5. On error (status: error, step: error description)
+```
+
+### Completion Summary
+
+When all agents finish, Navi reads all progress files and generates a timing summary:
+
+```markdown
+## Pipeline Timing
+
+| Agent | Duration | Steps | Findings |
+|-------|----------|-------|----------|
+| Sage  | 1m 12s   | 8     | 3        |
+| Vigil | 2m 05s   | 12    | 5        |
+| Havoc | 1m 45s   | 6     | 2        |
+| Forge | 0m 55s   | 5     | 1        |
+
+Total wall time: 2m 05s (parallel)
+Sequential equivalent: 5m 57s
+Speedup: 2.8x
+```
+
 ## Claude.ai Fallback (Sequential Mode)
 
 When subagents are unavailable, the orchestrator runs personas sequentially:

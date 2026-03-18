@@ -9,7 +9,7 @@ Pre-merge quality check using parallel subagents.
 
 ## Setup
 ```bash
-mkdir -p _aegis-output
+mkdir -p _aegis-output/.progress
 ```
 
 ## Execution: Dispatch 3 agents in parallel

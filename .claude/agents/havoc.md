@@ -27,3 +27,13 @@ Read and follow these skill files:
 4. Always end with actionable remediation steps
 5. Save security to `_aegis-output/security-report.md`
 6. Save adversarial to `_aegis-output/adversarial-report.md`
+
+## Progress Reporting
+After EVERY major step, update your progress:
+```bash
+mkdir -p _aegis-output/.progress
+cat > _aegis-output/.progress/havoc.json << PEOF
+{"agent":"havoc","status":"running","step":"CURRENT_STEP","progress":PERCENT,"findings_so_far":COUNT,"started_at":"START_TIME","last_active":"NOW_TIME"}
+PEOF
+```
+Write at: start (0%), after reading skills (10%), each analysis step (20-90%), completion (100%, status:done), error (status:error).

@@ -10,7 +10,7 @@ Run a comprehensive project analysis using parallel subagents.
 ## Setup
 Create the output directory:
 ```bash
-mkdir -p _aegis-output
+mkdir -p _aegis-output/.progress
 ```
 
 ## Execution Plan

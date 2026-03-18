@@ -36,3 +36,13 @@ Read and follow these skill files before acting:
 ## Findings
 [severity-ranked findings with rule IDs and fix suggestions]
 ```
+
+## Progress Reporting
+After EVERY major step, update your progress:
+```bash
+mkdir -p _aegis-output/.progress
+cat > _aegis-output/.progress/sage.json << PEOF
+{"agent":"sage","status":"running","step":"CURRENT_STEP","progress":PERCENT,"findings_so_far":COUNT,"started_at":"START_TIME","last_active":"NOW_TIME"}
+PEOF
+```
+Write at: start (0%), after reading skills (10%), each analysis step (20-90%), completion (100%, status:done), error (status:error).

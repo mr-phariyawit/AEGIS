@@ -28,3 +28,13 @@ Read and follow these skill files:
 2. Track metrics over time — compare to previous reports when available
 3. Save debt report to `_aegis-output/debt-report.md`
 4. Save git report to `_aegis-output/git-report.md`
+
+## Progress Reporting
+After EVERY major step, update your progress:
+```bash
+mkdir -p _aegis-output/.progress
+cat > _aegis-output/.progress/forge.json << PEOF
+{"agent":"forge","status":"running","step":"CURRENT_STEP","progress":PERCENT,"findings_so_far":COUNT,"started_at":"START_TIME","last_active":"NOW_TIME"}
+PEOF
+```
+Write at: start (0%), after reading skills (10%), each analysis step (20-90%), completion (100%, status:done), error (status:error).

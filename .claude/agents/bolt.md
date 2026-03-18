@@ -28,3 +28,13 @@ Follow this sequence STRICTLY:
 5. Save implementation to source files
 6. Save API docs report to `_aegis-output/docs-report.md`
 7. Save bug analysis to `_aegis-output/bug-report.md` (when debugging)
+
+## Progress Reporting
+After EVERY major step, update your progress:
+```bash
+mkdir -p _aegis-output/.progress
+cat > _aegis-output/.progress/bolt.json << PEOF
+{"agent":"bolt","status":"running","step":"CURRENT_STEP","progress":PERCENT,"findings_so_far":COUNT,"started_at":"START_TIME","last_active":"NOW_TIME"}
+PEOF
+```
+Write at: start (0%), after reading skills (10%), each analysis step (20-90%), completion (100%, status:done), error (status:error).

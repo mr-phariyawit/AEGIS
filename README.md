@@ -541,6 +541,44 @@ _aegis-output/
 | `/aegis-pipeline` | Full project analysis | Phase 1: 4 parallel → Phase 2: 2 dependent → Phase 3: Navi synthesis |
 | `/aegis-verify` | Pre-merge quality gate | Vigil + Havoc + Forge (3 parallel) |
 | `/aegis-launch` | Production readiness | All 6 agents parallel → Navi GO/NO-GO decision |
+| `/aegis-status` | **Real-time progress of all agents** | None (reads heartbeat files) |
+
+### Progress Monitoring (Heartbeat System)
+
+Every AEGIS agent writes a progress file after each step — solving the "silent agent" problem where agents appear stuck with no visible feedback.
+
+```mermaid
+graph LR
+    AG["Agent does\na step"] --> WR["Writes progress\nto JSON file"]
+    WR --> AG
+    WR --> FS[".progress/\nagent.json"]
+    FS --> WATCH["aegis-watch.sh\npolls every 2s"]
+    FS --> CMD["/aegis-status\non demand"]
+
+    style AG fill:#E6F1FB,stroke:#185FA5,color:#042C53
+    style WR fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+    style FS fill:#FAEEDA,stroke:#854F0B,color:#412402
+    style WATCH fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style CMD fill:#EEEDFE,stroke:#534AB7,color:#26215C
+```
+
+**Monitor in a separate terminal:**
+```bash
+./aegis-watch.sh
+```
+
+**Output:**
+```
+  🛡️  AEGIS Agent Status
+  ══════════════════════════════════════════════════
+  AGENT      STATUS       PROG   STEP                         HEALTH
+  sage       🟢 running   ████████░░  75%  scanning src/services       ♥ 3s ago
+  vigil      🟢 running   ██████░░░░  60%  pass 3/5: performance      ♥ 1s ago
+  havoc      ✅ done       ██████████ 100%  complete
+  forge      🟢 running   ████░░░░░░  40%  npm audit                  ♥ 2s ago
+```
+
+**Stall detection:** if an agent hasn't updated for 30+ seconds → shows `⚠️ stalled`
 
 ### Platform Compatibility
 
@@ -576,7 +614,19 @@ Subagents use tokens independently — 4 parallel agents use roughly 4-7x tokens
 └── commands/         # Orchestration commands (invoke with /command-name)
     ├── aegis-pipeline.md    # Full pipeline dispatch
     ├── aegis-verify.md      # Pre-merge gate
-    └── aegis-launch.md      # Production readiness check
+    ├── aegis-launch.md      # Production readiness check
+    └── aegis-status.md      # Real-time agent progress
+
+aegis-watch.sh            # Terminal progress dashboard (run in separate terminal)
+
+_aegis-output/            # Created at runtime by agents
+├── .progress/            # Heartbeat files (auto-created)
+│   ├── sage.json
+│   ├── vigil.json
+│   └── ...
+├── standards-report.md
+├── review-report.md
+└── AEGIS-REPORT.md
 ```
 
 ---
@@ -914,6 +964,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 5.4.0 | 2026-03-19 | Heartbeat progress system, aegis-watch.sh, /aegis-status command |
 | 5.3.0 | 2026-03-18 | Added bug-lifecycle — 7-stage debug/reproduce/fix/retest/prevent workflow |
 | 5.2.0 | 2026-03-18 | Added aegis-orchestrator — subagent dispatch with parallel execution |
 | 5.1.0 | 2026-03-17 | Added super-spec — BRD+SRS+UX Blueprint+PBI engine for Sage |
