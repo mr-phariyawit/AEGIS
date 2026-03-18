@@ -117,7 +117,7 @@ flowchart TD
     G1 --> G2["./install.sh ~/.claude/skills"]
     G2 --> DONE
 
-    M3 --> C1["Download AEGIS-v5.0.0.zip from packages/"]
+    M3 --> C1["Download AEGIS-v5.4.0.zip from packages/"]
     C1 --> C2["Unzip to your skills directory"]
     C2 --> DONE
 
@@ -151,7 +151,7 @@ cd AEGIS
 
 ```bash
 # Download and unzip
-unzip AEGIS-v5.0.0.zip -d /path/to/your/skills/
+unzip AEGIS-v5.4.0.zip -d /path/to/your/skills/
 ```
 
 ### Upgrading from Previous Versions

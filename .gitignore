@@ -7,3 +7,12 @@ __pycache__/
 dist/
 build/
 tmp/
+
+# AEGIS runtime (created by agents)
+_aegis-output/
+
+# AEGIS upgrade backups (created by install.sh)
+.aegis-backups/
+.aegis-custom/
+*.user-backup
+*.bak

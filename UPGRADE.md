@@ -90,6 +90,8 @@ diff .claude/agents/sage.md .claude/agents/sage.md.bak
 - v5.0: `test-architect`, `aegis-builder`, `skill-marketplace`
 - v5.1: `super-spec` (BRD+SRS+UX+PBI engine)
 - v5.2: `aegis-orchestrator` + 8 subagent definitions + 3 commands
+- v5.3: `bug-lifecycle` (7-stage debug/reproduce/fix/retest/prevent)
+- v5.4: Heartbeat progress system + `aegis-watch.sh` + `/aegis-status` command
 
 **Breaking changes:** None. All upgrades are additive.
 
