@@ -154,11 +154,47 @@ cd AEGIS
 unzip AEGIS-v5.0.0.zip -d /path/to/your/skills/
 ```
 
+### Upgrading
+
+Already have AEGIS installed? The installer handles everything:
+
+```bash
+cd AEGIS && git pull origin main && ./install.sh
+```
+
+```mermaid
+flowchart LR
+    DET["Detect\nversion"] --> BAK["Backup\ncurrent"]
+    BAK --> SAV["Save your\ncustoms"]
+    SAV --> INS["Install\nnew"]
+    INS --> RES["Restore\ncustoms"]
+    RES --> DONE(["✅ Upgraded"])
+
+    style DET fill:#F1EFE8,stroke:#5F5E5A,color:#2C2C2A
+    style BAK fill:#FAEEDA,stroke:#854F0B,color:#412402
+    style SAV fill:#EEEDFE,stroke:#534AB7,color:#26215C
+    style INS fill:#E6F1FB,stroke:#185FA5,color:#042C53
+    style RES fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+    style DONE fill:#E1F5EE,stroke:#0F6E56,color:#04342C
+```
+
+| Command | What It Does |
+|---------|-------------|
+| `./install.sh --check` | Show installed vs available version |
+| `./install.sh --diff` | Preview changes (dry run) |
+| `./install.sh --backup` | Backup only |
+| `./install.sh --restore` | List backups |
+| `./install.sh --force` | Reinstall same version |
+
+Your custom skills and modifications are automatically detected, backed up, and restored. See [UPGRADE.md](UPGRADE.md) for full details.
+
 ### Verify Installation
 
 ```bash
+./install.sh --check
+# or manually:
 ls /path/to/your/skills/*/SKILL.md | wc -l
-# Should output: 16
+# Should output: 18
 ```
 
 Then open Claude and say:
@@ -618,6 +654,7 @@ flowchart LR
 |----------|-------------|
 | [User Manual (PDF)](docs/AEGIS-User-Manual-v5.pdf) | 17-page comprehensive guide |
 | [AEGIS vs BMAD](docs/AEGIS-vs-BMAD-Comparison.md) | Feature-by-feature comparison |
+| [Upgrade Guide](UPGRADE.md) | Version upgrade, backup, restore, migration |
 | [Contributing](CONTRIBUTING.md) | How to contribute skills and modules |
 
 ---
