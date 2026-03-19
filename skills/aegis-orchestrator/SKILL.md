@@ -11,29 +11,31 @@ The orchestrator transforms AEGIS from a sequential skill system into a **parall
 
 ## Golden Rule: NEVER Leave the User in the Dark
 
-After dispatching subagents, the main agent MUST immediately run the inline progress monitor:
+After dispatching subagents, the main agent MUST:
 
+1. **Run the inline monitor immediately** — keeps main agent's turn alive:
 ```bash
 bash aegis-monitor.sh 300 5
 ```
 
-This prints live status updates every 5 seconds so the user always sees:
-```
-  🛡️ AEGIS — Monitoring agents...
-  ─────────────────────────────────────────
-  🔄 sage     ████████████░░░░░░░░  60%  scanning src/services
-  🔄 vigil    ██████████░░░░░░░░░░  50%  pass 3/5: performance
-  ✅ havoc    ████████████████████ 100%  complete
-  🔄 forge    ████████░░░░░░░░░░░░  40%  npm audit             ⚠️ stall(45s)
-  ─────────────────────────────────────────
-```
+2. **NEVER end your response** until ALL of these are true:
+   - All agents report `status: done` in their progress files
+   - `_aegis-output/AEGIS-REPORT.md` (or relevant report) has been created
+   - You have read the report and presented it to the user
 
-**Why:** Without this, the user sees nothing while agents work in background — it looks like the system is frozen. This is the #1 UX complaint with subagent systems. The monitor solves it by polling heartbeat files that each agent writes after every step.
+**Why this matters:** If the main agent finishes its turn after dispatching, Claude Code enables the Enter button — giving the user a false signal that work is complete. The monitor script keeps the main agent's bash tool call alive, which keeps the Enter button disabled until agents truly finish.
 
-**Three signals the user needs:**
-1. **Is it alive?** → progress bar moves, last active timestamp
-2. **How much longer?** → progress percentage + step description
-3. **Is there a problem?** → stall detection (⚠️ if no update for 30s)
+```
+WRONG:
+  Main agent: "I've dispatched 4 agents. They're working now."
+  → Turn ends → Enter enabled → User thinks it's done → CONFUSION
+
+RIGHT:
+  Main agent: dispatches 4 agents → runs aegis-monitor.sh (blocking)
+  → Monitor prints progress every 5s → Enter stays disabled
+  → Monitor exits when all done → Main reads report → Presents to user
+  → THEN turn ends → Enter enabled → User knows it's truly done
+```
 
 ## Platform Capabilities
 

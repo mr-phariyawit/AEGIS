@@ -80,3 +80,12 @@ bash aegis-monitor.sh 180 5
 ## Step 6: Present Results
 
 Read `_aegis-output/AEGIS-REPORT.md` and present to the user.
+
+## ⚠️ GUARD: Do NOT End Your Turn Early
+
+Your response is NOT complete until you have:
+1. Confirmed all agents finished (monitor exited successfully)
+2. Read _aegis-output/AEGIS-REPORT.md
+3. Presented the report contents to the user
+
+If you end your turn before these 3 steps, the Enter button enables prematurely and the user thinks the pipeline is done when it isn't. The monitor script keeps your bash tool call alive to prevent this.

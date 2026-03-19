@@ -29,3 +29,10 @@ bash aegis-monitor.sh 180 5
 ## Step 4: Present Verdict
 
 Read all reports. Synthesize: **PASS** (no critical) / **WARN** (warnings only) / **FAIL** (critical findings).
+
+## ⚠️ GUARD: Do NOT End Your Turn Early
+
+Your response is NOT complete until you have:
+1. Confirmed all agents finished (monitor exited)
+2. Read all reports and synthesized PASS/WARN/FAIL verdict
+3. Presented the verdict to the user

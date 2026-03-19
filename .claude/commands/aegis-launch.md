@@ -34,3 +34,11 @@ After all done, dispatch Navi: "Read ALL reports. Make GO / NO-GO decision with 
 ## Step 5: Present Decision
 
 Read `_aegis-output/LAUNCH-DECISION.md` and present the verdict.
+
+## ⚠️ GUARD: Do NOT End Your Turn Early
+
+Your response is NOT complete until you have:
+1. Confirmed all agents finished (monitor exited)
+2. Dispatched Navi for GO/NO-GO synthesis
+3. Read _aegis-output/LAUNCH-DECISION.md
+4. Presented the verdict to the user
