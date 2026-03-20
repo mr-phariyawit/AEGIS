@@ -1,557 +1,549 @@
 # 🛡️ AEGIS v6.0 — Specification Document
 
-> **Codename: "Context is King"**
+> **Codename: "Context is King, Memory is Soul"**
 >
-> *Upgrade from subagent-only architecture to hybrid Agent Teams + Context Management*
+> Hybrid Agent Teams + Context Management + Persistent Brain
+>
+> Inspired by: Oracle Framework (Soul-Brews-Studio), Claude Thailand Community transcript, production dogfood
 
-**Written by:** AEGIS Team (Party Mode)
+**Written by:** AEGIS Team (Party Mode) — All 8 personas
 
-| Persona | Contribution |
-|---------|-------------|
-| 🧭 Navi | Project vision, scope, priority ranking |
-| 📐 Sage | Requirements, architecture, acceptance criteria |
-| ⚡ Bolt | Implementation plan, technical feasibility |
-| 🛡️ Vigil | Quality gates, test strategy, regression risks |
-| 🔴 Havoc | Risk assessment, adversarial review, kill scenarios |
-| 🔧 Forge | Deployment, upgrade path, backward compatibility |
-| 🖌️ Pixel | Developer UX, onboarding experience |
-| 🎨 Muse | Documentation, marketing, community |
-
-**Version:** 1.0
+**Version:** 2.0 (Rewrite — Oracle-integrated)
 **Date:** 2026-03-20
-**Status:** DRAFT — Ready for review
+**Status:** DRAFT
 
 ---
 
-## 1. Context & Problem Statement
+## 1. Why v6 — The Three Sources of Truth
 
-### 1.1 What We Learned (Dogfood + Community)
+### Source 1: Dogfood (Our own Claude Code project)
+- ✅ All 19 skills trigger correctly
+- ✅ Subagent dispatch works
+- ⚠️ False-ready signal (fixed v5.4.1)
+- ❌ Every session starts from zero — no persistent memory
+- ❌ Agents can't communicate with each other
 
-AEGIS v5.4 has been validated on a real Claude Code project. Additionally, a transcript from **Claude Thailand Community** (3 production speakers) revealed 7 critical patterns that AEGIS does not yet address.
+### Source 2: Claude Thailand Community (3 speakers)
 
-#### From our own dogfood:
-- ✅ All 19 skills trigger correctly on Claude Code
-- ✅ Subagent dispatch works — agents produce reports
-- ✅ Heartbeat monitoring works — user sees progress
-- ⚠️ False-ready signal — Enter button enables prematurely (fixed in v5.4.1)
-- ⚠️ Agents cannot communicate with each other (subagent limitation)
+| Pattern | Speaker | Insight |
+|---------|---------|---------|
+| Progressive disclosure | Mickey (AX Digital) | Load context lazily — AI should know only what's needed for THIS task |
+| Shared reference files | Mickey | DRY — create 1 reference file, skills point to it |
+| Layered orchestration | Mickey | Research → Implement → Integrate with review gates between |
+| Model routing | Mickey | Leader=Opus, Implement=Sonnet, Research=Haiku |
+| Agent Teams (tmux) | Mickey + Joon | Mesh communication, shared task list, 9 agents in 16 min |
+| Extract learning | Mickey | `/extract-learning` saves session knowledge for next time |
+| Context budget (20% rule) | New (Debox) | Start ≤20%, auto-compact at 60-70%, buffer 16.5% |
 
-#### From community transcript (3 speakers):
+### Source 3: Oracle Framework (Soul-Brews-Studio)
 
-| # | Pattern | Speaker | AEGIS Gap |
-|---|---------|---------|-----------|
-| 1 | Progressive disclosure — load context lazily | Mickey (AX Digital) | Skills load entire SKILL.md always |
-| 2 | Shared reference files (DRY principle) | Mickey | Rules duplicated across 8 agent files |
-| 3 | Layered orchestration with review gates | Mickey | No review gates between pipeline phases |
-| 4 | Model routing per agent (Opus/Sonnet/Haiku) | Mickey | No `model:` field in agents |
-| 5 | Agent Teams — mesh communication between agents | Mickey + Joon | Subagent-only (hub-and-spoke) |
-| 6 | Extract learning / Metal Skills | Mickey | No knowledge extraction mechanism |
-| 7 | Context budget awareness (20% rule) | New (Debox) | No context monitoring |
-
-### 1.2 Core Thesis
-
-**"Good engineer = good at managing AI agents = good at managing context"** — Mickey (AX Digital)
-
-**"Treat context like system design — clear boundaries, single responsibility, progressive disclosure"** — Mickey
-
-**"Context is King — เริ่ม session ไม่เกิน 20%"** — New (Debox)
-
-These insights reshape AEGIS from a "skill collection" into a **context-aware, self-managing agent framework**.
-
----
-
-## 2. Goals & Non-Goals
-
-### 2.1 Goals
-
-| ID | Goal | KPI | Owner |
-|----|------|-----|-------|
-| G-01 | Reduce context footprint per skill by 80% | Avg skill load: <50 tokens (from ~500) | 📐 Sage |
-| G-02 | Enable mesh agent communication | Agents can message each other directly | ⚡ Bolt |
-| G-03 | Route models per agent automatically | Cost reduction 40-60% on pipeline runs | 🔧 Forge |
-| G-04 | Add review gates between pipeline phases | Zero broken output passed to next phase | 🛡️ Vigil |
-| G-05 | Extract and persist learning across sessions | Knowledge files grow per project | 🧭 Navi |
-| G-06 | Monitor context budget in real-time | Warning before exceeding 60% context | 🔧 Forge |
-| G-07 | Maintain backward compatibility with v5.x | install.sh --upgrade works seamlessly | 🔧 Forge |
-
-### 2.2 Non-Goals (v6.0)
-
-- GUI / web dashboard for AEGIS (future v7)
-- Custom model provider support (OpenRouter, etc.) — use existing openrouter-api skill
-- Automated CI/CD integration (use existing GitHub Action patterns)
-- Mobile app for AEGIS management
+| Component | What We Learned |
+|-----------|----------------|
+| **ψ Brain** | 5-pillar directory structure with knowledge flowing: active → logs → retros → learnings → resonance (soul) |
+| **rrr Retrospective** | Forced reflection every session: AI Diary 150+ words + Honest Feedback 3 friction points |
+| **Knowledge Distillation** | 948 files → 15 files (98.4% reduction) without losing knowledge. Git preserves everything. |
+| **MAW (multi-agent-workflow-kit)** | tmux + git worktree: each agent = own branch + workspace. `maw hey 1 "task"` CLI |
+| **Modular CLAUDE_*.md** | Hub file ~500 tokens + lazy-loaded detail files with "When to Read" priority table |
+| **Skills Profiles** | minimal (8) / standard (13) / full (31) + feature stacking (`/go + soul`) |
+| **Subagent Delegation** | "Opus writes, Haiku gathers. Never reverse." Main writes synthesis. |
+| **Session Activity** | Per-agent focus state (working/pending/jumped) + continuous activity.log |
+| **Safety Rules** | NEVER amend (breaks all agents), NEVER force push, `git -C` not `cd` |
 
 ---
 
-## 3. Architecture — 📐 Sage
+## 2. Architecture Overview — 📐 Sage
 
-### 3.1 Current vs Target Architecture
-
-```
-v5.4 (Current):                          v6.0 (Target):
-┌──────────────┐                         ┌──────────────────┐
-│ Main Agent   │                         │ AEGIS Director   │
-│ (orchestrate)│                         │ (smart routing)  │
-└──────┬───────┘                         └──────┬───────────┘
-       │ hub-and-spoke                          │ auto-select
-  ┌────┼────┐                              ┌────┼────┐
-  ▼    ▼    ▼                              ▼    ▼    ▼
-┌───┐┌───┐┌───┐                         Subagent │ Agent Team
-│ A ││ B ││ C │ (can't talk)            (simple)  │ (complex)
-└───┘└───┘└───┘                                   │
-  │    │    │                              ┌──────┼──────┐
-  ▼    ▼    ▼                              ▼      ▼      ▼
- Navi synthesizes                        A ←→ B ←→ C (mesh)
-                                                │
-                                          Shared task list
-```
-
-### 3.2 New Components
-
-#### 3.2.1 Shared References (`references/`)
+### 2.1 Three New Layers
 
 ```
-.claude/
-├── references/                    ← NEW
-│   ├── progress-protocol.md       # Heartbeat rules (shared by all agents)
-│   ├── output-format.md           # Report format standards
-│   ├── review-checklist.md        # Common review criteria
-│   └── context-rules.md           # Context budget rules
-├── agents/
-│   ├── sage.md                    # Points to references/ instead of duplicating
-│   └── ...
-└── commands/
+v5.4 (Current):                v6.0 (Target):
+┌────────────┐                 ┌─────────────────────────┐
+│ Skills     │                 │ Skills + Profiles       │  ← minimal/standard/full
+│ Personas   │                 │ Personas + Model Route  │  ← opus/sonnet/haiku
+│ Subagents  │                 │ Agent Teams (tmux+MAW)  │  ← mesh communication
+│            │                 │ ψ Brain (memory layer)  │  ← NEW: persistent knowledge
+│            │                 │ Session Lifecycle       │  ← NEW: start → work → retro → handoff
+│            │                 │ Context Budget          │  ← NEW: 20% rule + monitoring
+└────────────┘                 └─────────────────────────┘
 ```
 
-**Requirement FR-REF-01:** Every agent definition MUST reference shared files instead of duplicating rules.
+### 2.2 New Directory Structure
 
-**Requirement FR-REF-02:** Reference files MUST be loaded only when the agent needs them (progressive disclosure).
+```
+project/
+├── .claude/
+│   ├── agents/              # 8 personas (existing) + model: field
+│   ├── commands/            # 9 commands (4 existing + 5 new)
+│   ├── references/          # NEW: shared reference files (DRY)
+│   │   ├── progress-protocol.md
+│   │   ├── output-format.md
+│   │   ├── review-checklist.md
+│   │   └── context-rules.md
+│   └── teams/               # NEW: Agent Team configs
+│       ├── aegis-review/
+│       ├── aegis-build/
+│       └── aegis-debate/
+├── skills/                  # 21 skills (19 existing + 2 new)
+├── _aegis-brain/            # NEW: persistent knowledge (ψ equivalent)
+│   ├── resonance/           # Project identity + conventions
+│   ├── learnings/           # Patterns discovered per session
+│   ├── retrospectives/      # Session retrospectives (YYYY-MM/DD/)
+│   └── logs/                # Activity log + session states
+├── _aegis-output/           # Runtime output (existing)
+├── CLAUDE.md                # REWRITE: ultra-lean hub (~500 tokens)
+├── CLAUDE_agents.md         # NEW: agent reference (lazy-loaded)
+├── CLAUDE_skills.md         # NEW: skill catalog (lazy-loaded)
+├── CLAUDE_lessons.md        # NEW: patterns + anti-patterns (lazy-loaded)
+└── CLAUDE_safety.md         # NEW: safety rules (always loaded)
+```
 
-#### 3.2.2 Model Routing
+---
+
+## 3. Component Specifications
+
+### 3.1 ψ Brain → `_aegis-brain/` — 🧭 Navi
+
+The persistent knowledge layer. Survives across sessions. Grows with every project.
+
+```
+_aegis-brain/
+├── resonance/                    # WHO THIS PROJECT IS
+│   ├── project-identity.md       # Project name, stack, conventions
+│   ├── team-conventions.md       # Coding standards, review norms
+│   └── architecture-decisions.md # ADRs from retrospectives
+│
+├── learnings/                    # PATTERNS WE FOUND
+│   └── YYYY-MM-DD_slug.md       # One file per learning
+│
+├── retrospectives/               # SESSIONS WE HAD
+│   └── YYYY-MM/DD/
+│       └── HH.MM_slug.md        # One file per session
+│
+└── logs/
+    └── activity.log              # Continuous append-only log
+```
+
+**Knowledge flow** (Oracle-proven pipeline):
+
+```
+_aegis-output/ → _aegis-brain/logs/ → retrospectives/ → learnings/ → resonance/
+  (raw reports)    (activity snapshots)   (session retros)    (patterns)      (identity)
+```
+
+**Distillation** (periodic):
+When learnings/ exceeds 50 files → run `/aegis-distill`:
+- Compress per-topic into summaries
+- Promote patterns that appear 3+ times to `resonance/`
+- Git history preserves originals. "Nothing is truly deleted."
+
+**Requirements:**
+
+| ID | Requirement |
+|----|-------------|
+| FR-BRN-01 | `_aegis-brain/` MUST be created by install.sh during AEGIS setup |
+| FR-BRN-02 | `/aegis-retro` MUST write retrospective to `_aegis-brain/retrospectives/YYYY-MM/DD/` |
+| FR-BRN-03 | `/aegis-retro` MUST extract lessons to `_aegis-brain/learnings/` |
+| FR-BRN-04 | Navi MUST read `_aegis-brain/resonance/` at session start for project context |
+| FR-BRN-05 | `_aegis-brain/logs/activity.log` MUST be append-only, timestamped |
+| FR-BRN-06 | Git: `_aegis-brain/` SHOULD be tracked (committed to repo) — project knowledge belongs with the project |
+
+### 3.2 Session Lifecycle — 🧭 Navi
+
+Every session has a beginning and ending ritual.
+
+```
+SESSION START                    SESSION END
+┌──────────────┐                 ┌──────────────┐
+│ /aegis-start │                 │ /aegis-retro │
+│              │                 │              │
+│ 1. Check context budget        │ 1. Gather: git log, diff stats
+│ 2. Read resonance/             │ 2. Write: session summary
+│ 3. Read latest learnings       │ 3. Write: AI diary (150+ words)
+│ 4. Show pending from last      │ 4. Write: honest feedback (3 points)
+│ 5. Set focus state: working    │ 5. Extract: lessons learned
+│                                │ 6. Set focus state: completed
+└──────────────┘                 └──────────────┘
+        │                                │
+        ▼                                ▼
+   WORK WITH AGENTS              /aegis-handoff (optional)
+   (pipeline, review,            Prepare context for next session
+    team, build...)              "Here's where we left off..."
+```
+
+**Short codes** (Oracle-proven pattern):
+
+| Code | Command | Purpose |
+|------|---------|---------|
+| `/aegis-start` | Session start | Context check + load brain + show pending |
+| `/aegis-retro` | Session end | Retrospective + lessons + diary |
+| `/aegis-handoff` | Session transfer | Prepare handoff for next session |
+| `/aegis-distill` | Knowledge management | Compress learnings, promote patterns to resonance |
+
+**Requirements:**
+
+| ID | Requirement |
+|----|-------------|
+| FR-SES-01 | `/aegis-start` MUST check context budget and warn if >20% |
+| FR-SES-02 | `/aegis-start` MUST load `_aegis-brain/resonance/` for project identity |
+| FR-SES-03 | `/aegis-retro` MUST include AI diary (150+ words, first-person reflection) |
+| FR-SES-04 | `/aegis-retro` MUST include honest feedback (3 friction points minimum) |
+| FR-SES-05 | `/aegis-retro` MUST be written by main agent (Opus/Navi), never by subagent |
+| FR-SES-06 | `/aegis-handoff` MUST summarize: what was done, what's pending, blockers |
+
+### 3.3 Modular CLAUDE_*.md — 📐 Sage
+
+Ultra-lean hub + lazy-loaded details. Oracle-proven pattern.
+
+**CLAUDE.md (hub — max 500 tokens):**
+
+```markdown
+# AEGIS — [Project Name]
+
+## Navigation
+| File | When to Read | Priority |
+|------|-------------|----------|
+| CLAUDE.md | Every session | 🔴 Required |
+| CLAUDE_safety.md | Before git/file ops | 🔴 Required |
+| CLAUDE_agents.md | Before spawning agents | 🟡 As needed |
+| CLAUDE_skills.md | When choosing skills | 🟡 As needed |
+| CLAUDE_lessons.md | When stuck or deciding | 🟢 Reference |
+
+## Golden Rules
+1. NEVER use --force flags
+2. NEVER push to main — branch + PR always
+3. NEVER end turn before agents finish (false-ready guard)
+4. Run /aegis-start at session begin
+5. Run /aegis-retro at session end
+
+## Quick Reference
+[4-5 lines of project-specific context]
+```
+
+**Requirements:**
+
+| ID | Requirement |
+|----|-------------|
+| FR-MOD-01 | CLAUDE.md MUST be ≤500 tokens |
+| FR-MOD-02 | CLAUDE_safety.md MUST be loaded before any git operation |
+| FR-MOD-03 | Other CLAUDE_*.md files MUST be lazy-loaded only when relevant |
+| FR-MOD-04 | Each file MUST have navigation links back to hub |
+
+### 3.4 Shared References (DRY) — 📐 Sage
+
+```
+.claude/references/
+├── progress-protocol.md     # Heartbeat reporting rules (shared by all 8 agents)
+├── output-format.md         # Report format standards
+├── review-checklist.md      # Common review criteria
+└── context-rules.md         # Context budget rules + progressive disclosure
+```
+
+**Requirements:**
+
+| ID | Requirement |
+|----|-------------|
+| FR-REF-01 | Every agent definition MUST point to references/ instead of duplicating rules |
+| FR-REF-02 | References MUST be loaded only when the agent needs them (lazy) |
+| FR-REF-03 | Updating a reference file MUST propagate to all agents automatically |
+
+### 3.5 Model Routing — ⚡ Bolt
 
 ```yaml
 # In each agent .md frontmatter:
 ---
 name: sage
-model: opus          # Complex reasoning tasks
+model: opus
 description: "..."
 ---
 
 # Routing table:
-# opus:   navi (synthesis), sage (spec), havoc (adversarial)
+# opus:   navi (synthesis), sage (spec reasoning), havoc (adversarial)
 # sonnet: vigil (review), bolt (implement), pixel (UX)
-# haiku:  forge (scan/research), muse (content research)
+# haiku:  forge (scan/research), muse (content)
 ```
 
-**Requirement FR-MOD-01:** Each agent MUST declare its preferred model in YAML frontmatter.
+**Requirements:**
 
-**Requirement FR-MOD-02:** Orchestrator MUST pass model selection when spawning agents.
+| ID | Requirement |
+|----|-------------|
+| FR-MRT-01 | Each agent MUST declare `model:` in YAML frontmatter |
+| FR-MRT-02 | Orchestrator MUST pass model selection when spawning |
+| FR-MRT-03 | Default if not specified: sonnet |
+| FR-MRT-04 | User override: `--all-opus` flag forces all agents to opus |
 
-**Requirement FR-MOD-03:** Model selection MUST be overridable by user (`/aegis-pipeline --all-opus`).
+### 3.6 Progressive Disclosure in Skills — 📐 Sage
 
-#### 3.2.3 Dual-Mode Orchestration
-
-```
-Decision logic:
-  IF task needs inter-agent communication → Agent Team mode
-  IF task is independent scan/review      → Subagent mode
-  IF user explicitly requests             → Honor user choice
-
-Agent Team triggers:
-  - /aegis-team-*         → Always Agent Team
-  - Party mode debate     → Agent Team
-  - Cross-layer feature   → Agent Team
-
-Subagent triggers:
-  - /aegis-pipeline       → Subagent (agents don't need to talk)
-  - /aegis-verify         → Subagent (independent checks)
-  - /aegis-review [file]  → Subagent (single agent)
-```
-
-**Requirement FR-ORC-01:** Orchestrator MUST support both subagent and Agent Team dispatch.
-
-**Requirement FR-ORC-02:** Orchestrator MUST auto-select mode based on task type.
-
-**Requirement FR-ORC-03:** User MUST be able to override mode (`--team` or `--subagent` flag).
-
-#### 3.2.4 Layered Pipeline with Review Gates
-
-```
-Phase 1: Research (parallel, subagent)
-  ├── Sage: scan standards
-  ├── Forge: scan tech debt
-  └── Havoc: scan security
-          │
-    ┌─────┴─────┐
-    │ GATE 1    │  ← Navi reviews: are findings consistent? any blockers?
-    │ (Navi)    │     If blocker found → STOP, report to user
-    └─────┬─────┘
-          │
-Phase 2: Deep analysis (parallel, subagent or team)
-  ├── Vigil: code review (reads Phase 1 findings)
-  └── Bolt: API docs check
-          │
-    ┌─────┴─────┐
-    │ GATE 2    │  ← Vigil reviews: does Bolt's output match standards?
-    │ (Vigil)   │     If conflict → flag for human decision
-    └─────┬─────┘
-          │
-Phase 3: Synthesis (sequential)
-  └── Navi: unified report with all findings
-```
-
-**Requirement FR-GATE-01:** Each pipeline phase MUST end with a review gate.
-
-**Requirement FR-GATE-02:** Review gate MUST validate: output exists, format correct, no contradictions between agents.
-
-**Requirement FR-GATE-03:** Gate failure MUST halt pipeline and report to user (not silently continue).
-
-#### 3.2.5 Progressive Disclosure in Skills
+Every SKILL.md gets a two-tier structure:
 
 ```markdown
-# Current (v5): Full SKILL.md loaded every time (~500 lines)
-
-# v6: Two-tier structure
 ---
 name: code-review
-description: "..." # This is all Claude reads for matching (< 50 tokens)
+description: "..." # ≤50 tokens — this is ALL Claude reads for matching
 ---
 
-## Quick Reference (always loaded by orchestrator)
+## Quick Reference (loaded by orchestrator for planning)
 - 5-pass review: Correctness → Security → Performance → Maintainability → SDD
 - Output: _aegis-output/review-report.md
 - Severity: 🔴 Critical / 🟡 Warning / 🔵 Suggestion
 
-## Full Instructions (loaded only when skill is invoked)
+## Full Instructions (loaded ONLY when skill is invoked)
 [... detailed 400-line instructions ...]
 ```
 
-**Requirement FR-PD-01:** Every SKILL.md MUST have a `## Quick Reference` section (max 20 lines).
+**Requirements:**
 
-**Requirement FR-PD-02:** Orchestrator MUST load only Quick Reference when scanning skills for matching.
+| ID | Requirement |
+|----|-------------|
+| FR-PD-01 | Every SKILL.md MUST have `## Quick Reference` (max 20 lines) |
+| FR-PD-02 | Orchestrator loads ONLY Quick Reference when scanning for matches |
+| FR-PD-03 | Full SKILL.md loaded only when skill is actually invoked |
+| FR-PD-04 | 19 skills x ~50 tokens = ~950 tokens total scan cost (vs ~10K in v5) |
 
-**Requirement FR-PD-03:** Full SKILL.md MUST be loaded only when the skill is actually invoked.
-
-#### 3.2.6 Context Budget Manager
+### 3.7 Dual-Mode Orchestration (Subagent + Agent Teams) — ⚡ Bolt
 
 ```
-Pre-flight check (before any pipeline):
-  1. Read current context usage (/context)
-  2. If > 20% already → WARN user: "Consider /clear before pipeline"
-  3. Estimate pipeline cost:
-     - Phase 1 (3 agents × ~10K tokens summary) = ~30K
-     - Phase 2 (2 agents × ~15K) = ~30K
-     - Phase 3 (synthesis ~10K) = ~10K
-     - Total estimated: ~70K tokens (35% of 200K)
-  4. If estimated > remaining budget → suggest /compact first
+Decision logic:
+  IF task needs inter-agent communication  → Agent Team (tmux)
+  IF task is independent scan/review       → Subagent
+  IF user explicitly requests              → Honor user choice
 
-Runtime monitoring:
-  - Each agent prompt includes: "Keep output concise — max 2000 tokens per report"
-  - Monitor progress: if any agent approaching limits → early compact
+Agent Team mode requires:
+  - CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+  - tmux installed (or iTerm2)
+  - Fallback: if unavailable → graceful degradation to subagent
+```
 
-Post-run summary:
+**Team configurations:**
+
+| Team | Lead | Members | Use Case |
+|------|------|---------|----------|
+| aegis-review | vigil | havoc, forge | Deep multi-perspective review |
+| aegis-build | bolt | sage, vigil | Spec → implement → review cycle |
+| aegis-debate | navi | sage, bolt, havoc | Architecture decision debate |
+
+**Requirements:**
+
+| ID | Requirement |
+|----|-------------|
+| FR-ORC-01 | Orchestrator MUST support both subagent and Agent Team dispatch |
+| FR-ORC-02 | Orchestrator MUST auto-select mode based on task type |
+| FR-ORC-03 | Agent Teams MUST have automatic fallback to subagent if tmux unavailable |
+| FR-ORC-04 | User MUST be able to override mode (`--team` or `--subagent`) |
+
+### 3.8 Review Gates Between Pipeline Phases — 🛡️ Vigil
+
+```
+Phase 1: Research (parallel subagent)     → GATE 1 (Navi validates)
+Phase 2: Deep analysis (parallel/team)    → GATE 2 (Vigil validates)
+Phase 3: Synthesis (Navi sequential)      → Present to user
+```
+
+**Requirements:**
+
+| ID | Requirement |
+|----|-------------|
+| FR-GATE-01 | Each pipeline phase MUST end with a review gate |
+| FR-GATE-02 | Gate MUST validate: output exists, format correct, no contradictions |
+| FR-GATE-03 | Gate failure MUST halt pipeline and report to user |
+| FR-GATE-04 | Gates are advisory — user can override with `--skip-gates` |
+
+### 3.9 Context Budget Manager — 🔧 Forge
+
+```
+Pre-flight (/aegis-start):
+  1. Check context: if >20% → WARN
+  2. Estimate pipeline cost (~70K for full pipeline)
+  3. If estimated > remaining → suggest /compact first
+
+Runtime:
+  - Agent prompts include: "Keep output concise — max 2000 tokens"
+  - Monitor: if approaching 60% → warn about auto-compact
+
+Post-run:
   - "Pipeline used 68K tokens (34%). Remaining: 132K (66%)"
 ```
 
-**Requirement FR-CTX-01:** Orchestrator MUST check context usage before dispatching agents.
+**Requirements:**
 
-**Requirement FR-CTX-02:** Orchestrator MUST warn user if starting context > 20%.
+| ID | Requirement |
+|----|-------------|
+| FR-CTX-01 | `/aegis-start` MUST check context usage before any work |
+| FR-CTX-02 | MUST warn user if starting context >20% |
+| FR-CTX-03 | Each agent prompt MUST include token budget instruction |
+| FR-CTX-04 | Post-pipeline MUST report context usage delta |
 
-**Requirement FR-CTX-03:** Each agent prompt MUST include token budget instruction.
-
-**Requirement FR-CTX-04:** Post-pipeline summary MUST include context usage stats.
-
-#### 3.2.7 Extract Learning Skill
+### 3.10 Skill Profiles — 🖌️ Pixel
 
 ```
-Trigger: /aegis-learn or "extract learning from this session"
+/aegis-mode minimal    →  7 skills: personas, orchestrator, code-review,
+                          code-standards, git-workflow, bug-lifecycle, project-navigator
 
-Process:
-  1. Read conversation history (current session)
-  2. Extract: decisions made, patterns discovered, mistakes caught, new conventions
-  3. Classify: architecture decisions, code patterns, bug patterns, process improvements
-  4. Save to: .claude/learnings/{date}-{topic}.md
-  5. Update: .claude/references/project-knowledge.md (append new learnings)
+/aegis-mode standard   → 13 skills: minimal + super-spec, test-architect,
+                          security-audit, tech-debt-tracker, sprint-tracker, api-docs
 
-Output:
-  ## Learning: [topic]
-  **Date:** [date]
-  **Session:** [session context]
-  
-  ### Decisions
-  - [decision 1]: [rationale]
-  
-  ### Patterns Discovered
-  - [pattern]: [where found, how to apply]
-  
-  ### Mistakes Caught
-  - [mistake]: [how it was caught, prevention rule]
-  
-  ### New Conventions
-  - [convention]: [add to STANDARDS.md? add to CLAUDE.md?]
+/aegis-mode full       → 21 skills: all skills including teams + brain
 ```
 
-**Requirement FR-LRN-01:** Extract learning skill MUST produce structured markdown.
+**Requirements:**
 
-**Requirement FR-LRN-02:** Learnings MUST be categorized (decisions, patterns, mistakes, conventions).
-
-**Requirement FR-LRN-03:** Skill MUST suggest which learnings to add to CLAUDE.md or STANDARDS.md.
+| ID | Requirement |
+|----|-------------|
+| FR-PRF-01 | install.sh MUST support `--profile minimal/standard/full` |
+| FR-PRF-02 | `/aegis-mode` command MUST switch profiles at runtime |
+| FR-PRF-03 | Minimal profile MUST fit within 20% context budget at start |
 
 ---
 
-## 4. Agent Team Definitions — ⚡ Bolt
+## 4. New Commands Summary — ⚡ Bolt
 
-### 4.1 Pre-configured Teams
+| Command | Type | Purpose |
+|---------|------|---------|
+| `/aegis-start` | Session | Begin session: check context, load brain, show pending |
+| `/aegis-retro` | Session | End session: retrospective, lessons, diary, handoff |
+| `/aegis-handoff` | Session | Prepare context transfer for next session |
+| `/aegis-distill` | Knowledge | Compress learnings, promote patterns to resonance |
+| `/aegis-context` | Utility | Check context budget status |
+| `/aegis-team-review` | Agent Team | Spawn review team (Vigil + Havoc + Forge) |
+| `/aegis-team-build` | Agent Team | Spawn build team (Bolt + Sage + Vigil) |
+| `/aegis-team-debate` | Agent Team | Spawn debate team (all personas) |
+| `/aegis-mode` | Config | Switch skill profile (minimal/standard/full) |
 
-```
-.claude/teams/                         ← NEW
-├── aegis-review/
-│   ├── config.json                    # Team: Vigil (lead) + Havoc + Forge
-│   └── README.md                      # When to use, expected output
-├── aegis-build/
-│   ├── config.json                    # Team: Bolt (lead) + Sage + Vigil
-│   └── README.md
-├── aegis-debate/
-│   ├── config.json                    # Team: Navi (lead) + ALL personas
-│   └── README.md
-└── aegis-fullstack/
-    ├── config.json                    # Team: Bolt-FE + Bolt-BE + Vigil + Forge
-    └── README.md
-```
-
-### 4.2 Team Configurations
-
-#### Review Team (`/aegis-team-review`)
-```json
-{
-  "name": "aegis-review",
-  "lead": "vigil",
-  "teammates": ["havoc", "forge"],
-  "task_pattern": "Vigil reviews code, Havoc challenges security, Forge checks git hygiene. Share findings via mailbox. Vigil synthesizes final verdict.",
-  "model_routing": {
-    "vigil": "sonnet",
-    "havoc": "opus",
-    "forge": "haiku"
-  }
-}
-```
-
-#### Build Team (`/aegis-team-build`)
-```json
-{
-  "name": "aegis-build",
-  "lead": "bolt",
-  "teammates": ["sage", "vigil"],
-  "task_pattern": "Sage provides spec, Bolt implements, Vigil reviews each component. Bolt and Sage communicate directly when spec is unclear.",
-  "model_routing": {
-    "bolt": "sonnet",
-    "sage": "opus",
-    "vigil": "sonnet"
-  }
-}
-```
-
-#### Debate Team (`/aegis-team-debate`)
-```json
-{
-  "name": "aegis-debate",
-  "lead": "navi",
-  "teammates": ["sage", "bolt", "havoc"],
-  "task_pattern": "Navi poses the question. Sage proposes spec. Bolt evaluates feasibility. Havoc challenges everything. They debate via mailbox until consensus or deadlock. Navi synthesizes final recommendation.",
-  "model_routing": {
-    "navi": "opus",
-    "sage": "opus",
-    "bolt": "sonnet",
-    "havoc": "opus"
-  }
-}
-```
-
-### 4.3 New Commands
-
-| Command | Mode | Team | Use Case |
-|---------|------|------|----------|
-| `/aegis-team-review` | Agent Team | Vigil + Havoc + Forge | Deep multi-perspective review |
-| `/aegis-team-build` | Agent Team | Bolt + Sage + Vigil | Spec → implement → review cycle |
-| `/aegis-team-debate` | Agent Team | Navi + Sage + Bolt + Havoc | Architecture decision |
-| `/aegis-learn` | Single | Navi | Extract session learnings |
-| `/aegis-context` | Single | Navi | Check context budget |
+Existing commands preserved:
+- `/aegis-pipeline` — full pipeline (subagent mode)
+- `/aegis-verify` — verification pipeline
+- `/aegis-launch` — go/no-go launch check
+- `/aegis-status` — check agent progress
 
 ---
 
-## 5. Quality & Testing — 🛡️ Vigil
+## 5. Safety Rules — 🛡️ Vigil (adapted from Oracle)
 
-### 5.1 Acceptance Criteria per Upgrade
+### 5.1 Git Safety (from Oracle CLAUDE_safety.md)
 
-#### AC-01: Progressive Disclosure
-- Given a fresh session, when AEGIS scans available skills, then only `description` from YAML frontmatter is loaded (< 50 tokens per skill)
-- Given a skill is invoked, when the agent starts working, then the full SKILL.md is read
-- Given 19 skills, when all are scanned, then total context used < 1000 tokens (vs ~10K in v5)
+| Rule | Why |
+|------|-----|
+| NEVER use `--force` flags | Destroys history |
+| NEVER push to main | Always branch + PR |
+| NEVER `git commit --amend` | Breaks all agents (hash divergence) |
+| NEVER `git reset --hard` on agent worktrees | Agents may have uncommitted work |
+| Use `git -C` not `cd` | Respect worktree boundaries |
 
-#### AC-02: Shared References
-- Given agent sage.md, when it needs progress reporting rules, then it reads `.claude/references/progress-protocol.md`
-- Given a rule change in progress-protocol.md, when any agent runs next, then it picks up the new rule
-- Given 8 agent files, when diffed against v5, then zero duplicated instruction blocks
+### 5.2 Agent Safety (from Oracle + dogfood)
 
-#### AC-03: Model Routing
-- Given `/aegis-pipeline` command, when agents are spawned, then each uses its declared model
-- Given `--all-opus` flag, when agents are spawned, then all agents use opus regardless of default
-- Given agent running on haiku, when output quality is insufficient, then orchestrator can retry on sonnet
+| Rule | Why |
+|------|-----|
+| Main agent (Opus/Navi) writes synthesis | Needs full context + reflection |
+| Subagent (Haiku) gathers data only | Cost efficiency + token savings |
+| NEVER end turn before agents finish | False-ready signal prevention |
+| NEVER let subagent write retrospective | Only main has vulnerability + nuance |
 
-#### AC-04: Agent Teams
-- Given `/aegis-team-debate`, when team spawns, then agents can message each other directly
-- Given Havoc challenges Sage's spec, when Sage responds, then the response goes to Havoc (not through Navi)
-- Given team completes, when Navi synthesizes, then synthesis includes inter-agent messages as evidence
+### 5.3 Context Safety (from Community)
 
-#### AC-05: Review Gates
-- Given Phase 1 agents complete, when Gate 1 runs, then it validates all expected reports exist
-- Given an agent produced invalid output, when gate checks, then pipeline halts with clear error message
-- Given gate passes, when Phase 2 starts, then Phase 2 agents receive Phase 1 findings as input
-
-#### AC-06: Context Budget
-- Given a new session at 25% context, when user runs `/aegis-pipeline`, then they see warning
-- Given pipeline completes, when results are shown, then context usage delta is displayed
-- Given context > 60%, when auto-compact triggers, then AEGIS learnings are preserved in compact summary
-
-#### AC-07: Extract Learning
-- Given a productive session, when user runs `/aegis-learn`, then learnings file is created in `.claude/learnings/`
-- Given learnings file exists, when new session starts, then Navi can reference past learnings
-- Given a learning suggests a CLAUDE.md update, when presented to user, then the specific addition is shown
-
-### 5.2 Regression Risks
-
-| Risk | Impact | Mitigation |
-|------|--------|-----------|
-| Progressive disclosure breaks skill matching | Skills stop triggering | Validate all 19 triggers after refactor |
-| Agent Teams experimental flag changes | Teams stop working | Feature-detect, fallback to subagent |
-| Model routing spawns wrong model | Cost explosion or quality drop | Log model per agent, alert on mismatch |
-| Review gates too strict | Pipeline never completes | Gates are advisory, user can override |
-| Context monitoring inaccurate | False warnings | Cross-check with /context output |
+| Rule | Why |
+|------|-----|
+| Start session ≤20% context | Leave room for actual work |
+| Progressive disclosure always | Load only what's needed |
+| Keep agent reports ≤2000 tokens | Prevent context bloat |
+| Use references/ not duplication | Single source of truth |
 
 ---
 
-## 6. Risk Assessment — 🔴 Havoc
+## 6. Acceptance Criteria — 🛡️ Vigil
 
-### 6.1 Kill Scenarios
+### AC-01: Brain Layer
+- Given a new AEGIS installation, when install.sh runs, then `_aegis-brain/` is created with all subdirectories
+- Given `/aegis-retro`, when session ends, then retrospective file exists at correct dated path
+- Given 3+ sessions, when `/aegis-distill` runs, then learnings are compressed and patterns promoted
 
-| # | Scenario | Probability | Impact | Mitigation |
-|---|----------|-------------|--------|-----------|
-| K1 | Agent Teams flag removed by Anthropic | Medium | High — team mode breaks | Fallback to subagent, detect at startup |
-| K2 | Model routing breaks with CC update | Low | Medium — wrong model used | Validate model field on each dispatch |
-| K3 | Progressive disclosure causes trigger miss | Medium | High — skills stop working | Keep description in YAML (always loaded) |
-| K4 | Reference files create circular dependency | Low | Medium — agent hangs | Max 2 levels of file reference, no cycles |
-| K5 | Context budget calculator is wrong | Medium | Low — false warnings only | Advisory only, user can ignore |
-| K6 | Learning extraction captures sensitive data | Low | High — data leak | Sanitize output, never include secrets/tokens |
+### AC-02: Session Lifecycle
+- Given `/aegis-start`, when context >20%, then user sees warning
+- Given `/aegis-retro`, when run, then AI diary ≥150 words and feedback has ≥3 friction points
+- Given `/aegis-handoff`, when run, then next session can load pending tasks
 
-### 6.2 Backward Compatibility
+### AC-03: Modular CLAUDE_*.md
+- Given fresh session, when CLAUDE.md is loaded, then ≤500 tokens used
+- Given agent spawning needed, when CLAUDE_agents.md loaded, then contains all 8 agent references
 
-**Requirement NFR-BC-01:** v5.x skills MUST work without modification on v6.0 orchestrator.
+### AC-04: Model Routing
+- Given `/aegis-pipeline`, when agents spawn, then each uses declared model
+- Given `--all-opus` flag, then all agents use opus
 
-**Requirement NFR-BC-02:** v5.x agent definitions MUST work (model defaults to sonnet if not specified).
+### AC-05: Agent Teams
+- Given `/aegis-team-debate`, when tmux available, then agents message each other directly
+- Given tmux NOT available, when team command runs, then graceful fallback to subagent with warning
 
-**Requirement NFR-BC-03:** v5.x commands MUST still function (subagent mode remains default).
+### AC-06: Progressive Disclosure
+- Given 21 skills scanned, then total context used <1000 tokens (vs ~10K in v5)
+- Given skill invoked, then full SKILL.md loaded at that point only
 
-**Requirement NFR-BC-04:** install.sh `--upgrade` from v5.x to v6.0 MUST preserve all user customizations.
-
----
-
-## 7. Deployment & Upgrade — 🔧 Forge
-
-### 7.1 File Changes Summary
-
-| Action | Files |
-|--------|-------|
-| **NEW** | `.claude/references/` (4 files) |
-| **NEW** | `.claude/teams/` (3 team configs) |
-| **NEW** | `skills/extract-learning/SKILL.md` |
-| **NEW** | `skills/context-budget/SKILL.md` |
-| **NEW** | `.claude/commands/aegis-team-review.md` |
-| **NEW** | `.claude/commands/aegis-team-build.md` |
-| **NEW** | `.claude/commands/aegis-team-debate.md` |
-| **NEW** | `.claude/commands/aegis-learn.md` |
-| **NEW** | `.claude/commands/aegis-context.md` |
-| **MODIFIED** | All 8 agent definitions (add `model:`, reference links, remove duplicates) |
-| **MODIFIED** | `skills/aegis-orchestrator/SKILL.md` (dual-mode, gates, context budget) |
-| **MODIFIED** | `skills/*/SKILL.md` (add Quick Reference sections) |
-| **MODIFIED** | `install.sh` → v6.0 (install teams/, references/) |
-| **MODIFIED** | `README.md` (new sections, updated diagrams) |
-
-### 7.2 install.sh v6.0 Changes
-
-```bash
-# New in v6.0:
-# - Install .claude/references/
-# - Install .claude/teams/
-# - Install new skills (extract-learning, context-budget)
-# - Install new commands (5 new)
-# - Migration: add model: field to existing agent definitions
-# - Migration: add Quick Reference to existing SKILL.md files
-```
-
-### 7.3 Version Migration
-
-```
-v5.4 → v6.0:
-  1. Backup current installation
-  2. Install new directories: references/, teams/
-  3. Add model: field to agent definitions (default: sonnet if not specified)
-  4. Refactor agent definitions to use references/ (remove duplicates)
-  5. Add Quick Reference section to all SKILL.md files
-  6. Install new skills: extract-learning, context-budget
-  7. Install new commands: 5 new commands
-  8. Update orchestrator with dual-mode + gates + context budget
-  9. Update README with new architecture diagrams
-```
+### AC-07: Context Budget
+- Given session at 25% context, when `/aegis-start` runs, then warning is displayed
+- Given pipeline completes, then context usage delta is shown
 
 ---
 
-## 8. Implementation Priority — 🧭 Navi
+## 7. Risk Assessment — 🔴 Havoc
 
-### 8.1 Phased Delivery
-
-```
-Phase A (Quick wins — do first):
-  [1] Model routing per agent          (30 min)  — immediate cost reduction
-  [2] Shared reference files           (45 min)  — remove duplication
-  [3] Progressive disclosure           (1 hr)    — reduce context footprint
-
-Phase B (Core architecture):
-  [4] Review gates in pipeline         (45 min)  — prevent broken output
-  [5] Context budget awareness         (30 min)  — prevent context overflow
-  [6] Extract learning skill           (30 min)  — build institutional knowledge
-
-Phase C (Agent Teams):
-  [7] Agent Team definitions + configs (1 hr)    — enable mesh communication
-  [8] New team commands                (30 min)  — /aegis-team-review, -build, -debate
-  [9] Dual-mode orchestrator           (1 hr)    — auto-select subagent vs team
-
-Phase D (Polish):
-  [10] Update README + docs            (45 min)  — new architecture diagrams
-  [11] Update install.sh               (30 min)  — v6.0 upgrade path
-  [12] Repackage all .skill files      (15 min)  — master zip v6.0
-```
-
-### 8.2 Estimated Total Effort
-
-| Phase | Effort | Impact |
-|-------|--------|--------|
-| A (Quick wins) | 2h 15m | 40% cost reduction + 80% context reduction |
-| B (Core) | 1h 45m | Quality gates + learning + budget |
-| C (Agent Teams) | 2h 30m | Mesh communication + real debate |
-| D (Polish) | 1h 30m | Documentation + packaging |
-| **Total** | **~8 hours** | **Full v6.0** |
+| # | Risk | P | I | Mitigation |
+|---|------|---|---|-----------|
+| K1 | Agent Teams flag removed | M | H | Automatic fallback to subagent mode |
+| K2 | Brain directory conflicts with project structure | L | M | Use `_aegis-brain/` prefix (unlikely to conflict) |
+| K3 | Retrospectives become stale/noisy | M | L | Distillation process compresses periodically |
+| K4 | Progressive disclosure breaks trigger matching | M | H | Keep description in YAML (always loaded) |
+| K5 | Model routing spawns wrong model | L | M | Log model per agent, validate on dispatch |
+| K6 | CLAUDE.md split causes context-loading gaps | M | M | "When to Read" priority table + safety always loaded |
+| K7 | tmux not available on user's system | M | H | Feature-detect at startup, fallback path tested |
 
 ---
 
-## 9. Open Questions — Team
+## 8. Backward Compatibility — 🔧 Forge
 
-| # | Question | Owner | Impact |
-|---|---------|-------|--------|
-| Q1 | Is Agent Teams flag stable enough for production? | 🔧 Forge | Determines if we ship team mode as default or opt-in |
-| Q2 | What's the actual token cost difference between subagent and Agent Team? | 🔴 Havoc | Affects model routing recommendations |
-| Q3 | Should Quick Reference be in YAML frontmatter or as a separate section? | 📐 Sage | Affects how orchestrator reads skills |
-| Q4 | How to handle learnings when user has multiple projects? | 🧭 Navi | Affects learning file location (project vs global) |
-| Q5 | Should review gates be blocking or advisory? | 🛡️ Vigil | Affects pipeline flow (strict vs flexible) |
+| Requirement | Implementation |
+|-------------|---------------|
+| v5.x skills work on v6.0 | Skills without Quick Reference section still work — full file loaded |
+| v5.x agent definitions work | Missing `model:` defaults to sonnet |
+| v5.x commands work | Existing 4 commands unchanged |
+| install.sh `--upgrade` preserves customizations | Backup → add new files → preserve user edits |
+| Projects without `_aegis-brain/` work | Brain features disabled gracefully if directory missing |
+
+---
+
+## 9. Implementation Plan — 🧭 Navi
+
+### Phase A: Foundation (2 hours)
+1. Create `_aegis-brain/` structure + README
+2. Create `.claude/references/` (4 shared files)
+3. Refactor 8 agent definitions (add `model:`, point to references/)
+4. Add Quick Reference section to all 19 SKILL.md files
+
+### Phase B: Session Lifecycle (1.5 hours)
+5. Create `/aegis-start` command
+6. Create `/aegis-retro` command (rrr-inspired)
+7. Create `/aegis-handoff` command
+8. Create `/aegis-distill` skill
+
+### Phase C: Orchestration Upgrade (2 hours)
+9. Add context budget checking to orchestrator
+10. Add review gates between pipeline phases
+11. Create Agent Team configs (3 teams)
+12. Create `/aegis-team-*` commands (3 new)
+13. Add dual-mode dispatch logic (subagent vs team)
+
+### Phase D: Polish (1.5 hours)
+14. Rewrite CLAUDE.md as ultra-lean hub
+15. Create CLAUDE_safety.md, CLAUDE_agents.md, CLAUDE_skills.md, CLAUDE_lessons.md
+16. Create `/aegis-mode` command (profile switching)
+17. Update install.sh v6.0 (profiles, brain, references, teams)
+18. Update README with new architecture diagrams
+
+### Phase E: Validate (1 hour)
+19. Dogfood: run full session lifecycle on real project
+20. Verify: all 19 original skills still trigger
+21. Verify: Agent Teams fallback works when tmux unavailable
+22. Verify: context budget stays under 20% at start
+23. Commit + push + tag v6.0.0
+
+**Total estimated: ~8 hours across 5 phases**
 
 ---
 
@@ -559,15 +551,38 @@ Phase D (Polish):
 
 | Persona | Status | Notes |
 |---------|--------|-------|
-| 🧭 Navi | ✅ Approved | Priority ranking reflects real usage patterns |
-| 📐 Sage | ✅ Approved | Requirements are INVEST-compliant and testable |
-| ⚡ Bolt | ✅ Approved | Implementation plan is feasible within estimates |
-| 🛡️ Vigil | ✅ Approved | Acceptance criteria cover all new features + regressions |
-| 🔴 Havoc | ⚠️ Conditional | Concerned about Agent Teams stability — needs fallback |
-| 🔧 Forge | ✅ Approved | Upgrade path preserves backward compatibility |
-| 🖌️ Pixel | ✅ Approved | Developer UX improved — fewer commands to remember |
-| 🎨 Muse | ✅ Approved | README updates will showcase new capabilities |
+| 🧭 Navi | ✅ | Brain layer is the biggest upgrade — persistent memory changes everything |
+| 📐 Sage | ✅ | Requirements are testable and traced to source (dogfood/community/Oracle) |
+| ⚡ Bolt | ✅ | Implementation plan is realistic — phased delivery reduces risk |
+| 🛡️ Vigil | ✅ | Safety rules adapted from Oracle are battle-tested at scale |
+| 🔴 Havoc | ⚠️ Conditional | Agent Teams MUST have subagent fallback. Brain files MUST NOT contain secrets. |
+| 🔧 Forge | ✅ | Backward compatibility path is clear — zero breaking changes |
+| 🖌️ Pixel | ✅ | Session lifecycle (start → work → retro → handoff) improves DX significantly |
+| 🎨 Muse | ✅ | Oracle acknowledgment in README — credit where credit is due |
 
-**Havoc's condition:** Agent Teams mode MUST have automatic fallback to subagent mode if the experimental flag is unavailable. This MUST be tested before shipping.
+**Havoc's conditions:**
+1. Agent Teams MUST have automatic fallback to subagent if tmux unavailable
+2. `_aegis-brain/` MUST be sanitized — never store tokens, passwords, or secrets
+3. `/aegis-retro` AI diary MUST be honest, not performative
 
-**Decision: APPROVED for implementation — start Phase A immediately.**
+**Decision: APPROVED — begin Phase A.**
+
+---
+
+## Appendix: Credit & Inspiration
+
+| Source | Creator | What We Adopted |
+|--------|---------|----------------|
+| Oracle Brain (ψ/) | Nat Weerawan (Soul-Brews-Studio) | Brain structure, knowledge pipeline, session lifecycle, 5 Principles |
+| Multi-Agent Workflow Kit (MAW) | Soul-Brews-Studio (fork: laris-co) | tmux + git worktree pattern, `maw hey` CLI, sync protocol |
+| oracle-skills-cli | Soul-Brews-Studio | Profile system, skill catalog, `/rrr` retrospective pattern |
+| Claude Thailand Community | Joon, Mickey (AX Digital), New (Debox) | 7 production patterns (transcript analysis) |
+| Claude Code Agent Teams | Anthropic | Native mesh communication, shared task list |
+
+> "The Oracle Keeps the Human Human" — Oracle Philosophy
+>
+> "Context is King" — New (Debox)
+>
+> "Treat context like system design" — Mickey (AX Digital)
+>
+> "One command. Eight agents. Zero waiting." — AEGIS
